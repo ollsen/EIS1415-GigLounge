@@ -1,0 +1,16 @@
+extends ../layout
+
+block content
+    div.container
+        div.row
+            div.col-sm-6.col-md-4.col-md-offset-4
+                #band
+                    h1.text-center.login-title Bandlist: #{bandlist.length}
+                    if bandlist.length != 0
+                        ul
+                            for band in bandlist
+                                li 
+                                    a(href='/bands/#{band.id}') #{band.bandName}
+                    else
+                        p no bands registred
+                    a(href='/bands/new') Band erstellen

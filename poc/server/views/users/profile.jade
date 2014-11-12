@@ -1,0 +1,23 @@
+extends ../layout
+
+block content
+    div.container
+        div.row
+            div.col-sm-6.col-md-4.col-md-offset-4
+                #user
+                    h1.text-center.login-title #{userprofile.username}'s profile:
+                    ul.user-details
+                        li Username ---> #{userprofile.username}
+                        li E-Mail ---> #{userprofile.email}
+                        li Vorname ---> #{userprofile.firstName}
+                        li Nachname ---> #{userprofile.lastName}
+                        li Land ---> #{userprofile.country}
+                        li Stadt ---> #{userprofile.city}
+                        li Musikinstrument ---> #{userprofile.mInstrument}
+                        li Bands
+                            ul#bands
+                                for band in userprofile.bands
+                                    li 
+                                        a(href='/bands/#{band.id}') #{band.bandName}
+                    if userprofile.username == user.username
+                        a(href='/users/#{user.username}/edit') Edit

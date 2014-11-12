@@ -8,29 +8,11 @@ block content
         button(class='btn btn-lg btn-primary', onclick='stopRecording(this);' disabled) stop
         
         h2 Recordings
-        ul#recordingslist
-        
-        div#wave
-            button(class='btn btn-lg btn-primary', onclick='wavePlay();') play
-            
-            form(role='form', name='edit', class='form-signin')
-                .form-group
-                    label(for='start') start
-                    input(name='start', class='form-control', id='start')
-                .form-group
-                    label(for='end') end
-                    input(name='end', class='form-control', id='end')
-                .form-group
-                    label(for='note') note
-                    input(type='textarea', name='note', class='form-control', id='note', rows='3')
-                button(type='submit', class='btn btn-success btn-block') cut
-                button(type='button', class='btn btn-danger btn-block' data-action='delete-region') delete
-        
+        ul#recordingslist       
         
         h2 Log
         pre#log
         
+    
     script(src='/javascripts/recorder.js')
-    script(src='/javascripts/wavesurfer.min.js')
-    script(src='/javascripts/wavesurfer.regions.js')
-    script(src='/javascripts/record.js')
+    script(src='/javascripts/wavrecord.js')
