@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">GigLounge POC</string>
+    <string name="title_section_profile">Profil</string>
+    <string name="title_section_users">Benutzerliste</string>
+    <string name="title_section_bands">Bandliste</string>
+    <string name="title_section_record">Aufnahme</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="action_example">Example action</string>
+    <string name="action_settings">Settings</string>
+
+</resources>
