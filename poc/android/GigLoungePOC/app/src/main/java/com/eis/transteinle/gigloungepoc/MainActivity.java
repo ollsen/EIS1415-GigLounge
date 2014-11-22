@@ -6,6 +6,7 @@ import android.app.ActionBar;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.Context;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.Gravity;
@@ -20,7 +21,7 @@ import android.widget.TextView;
 
 
 public class MainActivity extends Activity
-        implements NavigationDrawerFragment.NavigationDrawerCallbacks {
+        implements NavigationDrawerFragment.NavigationDrawerCallbacks{
 
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
@@ -50,22 +51,45 @@ public class MainActivity extends Activity
     @Override
     public void onNavigationDrawerItemSelected(int position) {
         // update the main content by replacing fragments
+
+        Fragment fragment = new Fragment();
+        switch (position) {
+            case 0:
+                fragment = PlaceholderFragment.newInstance(position + 1);
+                break;
+            case 1:
+                fragment = UserlistFragment.newInstance(position + 1);
+                break;
+            case 2:
+                fragment = PlaceholderFragment.newInstance(position + 1);
+                break;
+            case 3:
+                fragment = RecordFragment.newInstance(position + 1);
+                break;
+            default:
+                fragment = PlaceholderFragment.newInstance(position + 1);
+                break;
+        }
+
         FragmentManager fragmentManager = getFragmentManager();
         fragmentManager.beginTransaction()
-                .replace(R.id.container, PlaceholderFragment.newInstance(position + 1))
+                .replace(R.id.container, fragment)
                 .commit();
     }
 
     public void onSectionAttached(int number) {
         switch (number) {
             case 1:
-                mTitle = getString(R.string.title_section1);
+                mTitle = getString(R.string.title_section_profile);
                 break;
             case 2:
-                mTitle = getString(R.string.title_section2);
+                mTitle = getString(R.string.title_section_users);
                 break;
             case 3:
-                mTitle = getString(R.string.title_section3);
+                mTitle = getString(R.string.title_section_bands);
+                break;
+            case 4:
+                mTitle = getString(R.string.title_section_record);
                 break;
         }
     }
