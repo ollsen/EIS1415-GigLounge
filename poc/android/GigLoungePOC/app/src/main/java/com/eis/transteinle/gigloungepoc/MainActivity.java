@@ -3,9 +3,12 @@ package com.eis.transteinle.gigloungepoc;
 import android.app.Activity;
 
 import android.app.ActionBar;
+import android.app.Dialog;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -20,10 +23,23 @@ import android.support.v4.widget.DrawerLayout;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
+import org.apache.http.NameValuePair;
+import org.json.JSONObject;
+
+import java.util.List;
+
 
 public class MainActivity extends Activity
         implements NavigationDrawerFragment.NavigationDrawerCallbacks,
                     UsernameListFragment.OnUserSelectedListener{
+
+
+    List<NameValuePair> params;
+    static SharedPreferences pref;
+    Dialog reset;
+    ServerRequest sr;
+
+    String uname;
 
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
@@ -40,6 +56,13 @@ public class MainActivity extends Activity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        pref = getSharedPreferences("AppPref", MODE_PRIVATE);
+        if (!pref.contains("username")) {
+            Intent logIntent = new Intent(this, LoginActivity.class);
+            startActivity(logIntent);
+            finish();
+        }
+
         mNavigationDrawerFragment = (NavigationDrawerFragment)
                 getFragmentManager().findFragmentById(R.id.navigation_drawer);
         mTitle = getTitle();
@@ -48,6 +71,10 @@ public class MainActivity extends Activity
         mNavigationDrawerFragment.setUp(
                 R.id.navigation_drawer,
                 (DrawerLayout) findViewById(R.id.drawer_layout));
+
+
+
+
     }
 
     @Override
@@ -157,6 +184,8 @@ public class MainActivity extends Activity
          * Returns a new instance of this fragment for the given section
          * number.
          */
+
+        String uname;
         public static PlaceholderFragment newInstance(int sectionNumber) {
             PlaceholderFragment fragment = new PlaceholderFragment();
             Bundle args = new Bundle();
@@ -172,6 +201,13 @@ public class MainActivity extends Activity
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_main, container, false);
+
+            //pref = getSharedPreferences("AppPref", MODE_PRIVATE);
+            uname = pref.getString("username","");
+            TextView tvUname;
+            tvUname = (TextView)rootView.findViewById(R.id.section_label);
+            tvUname.setText("Hello "+uname);
+
             return rootView;
         }
 

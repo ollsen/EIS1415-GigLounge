@@ -1,9 +1,13 @@
 package com.eis.transteinle.gigloungepoc;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.app.FragmentManager;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,7 +22,13 @@ import android.widget.Toast;
 
 import com.eis.transteinle.gigloungepoc.dummy.DummyContent;
 
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A fragment representing a list of Items.
@@ -31,6 +41,11 @@ public class UsernameListFragment extends Fragment implements AbsListView.OnItem
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_SECTION_NUMBER = "section_number";
+
+    List<NameValuePair> params;
+    static SharedPreferences pref;
+    Dialog reset;
+    ServerRequest sr;
 
 
 
@@ -67,6 +82,21 @@ public class UsernameListFragment extends Fragment implements AbsListView.OnItem
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_item, container, false);
+        pref = this.getActivity().getSharedPreferences("AppPref", Context.MODE_PRIVATE);
+        params = new ArrayList<NameValuePair>();
+        params.add(new BasicNameValuePair("username", pref.getString("username","")));
+        params.add(new BasicNameValuePair("password", pref.getString("password","")));
+        sr = new ServerRequest();
+        JSONObject json = sr.getJSON("http://h2192129.stratoserver.net/users/mlist", params);
+        if (json != null) {
+            try {
+                String jsonstr = json.toString();
+                Log.v("Users","response: "+jsonstr);
+                String user = json.getString("username");
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
 
 
 

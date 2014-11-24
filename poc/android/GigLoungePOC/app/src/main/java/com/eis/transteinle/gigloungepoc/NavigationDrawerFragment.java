@@ -4,6 +4,8 @@ package com.eis.transteinle.gigloungepoc;
 import android.app.Activity;
 import android.app.ActionBar;
 import android.app.Fragment;
+import android.content.Context;
+import android.content.Intent;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -11,6 +13,7 @@ import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -21,6 +24,13 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
+
+import org.apache.http.NameValuePair;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Fragment used for managing interactions for and presentation of a navigation drawer.
@@ -57,6 +67,10 @@ public class NavigationDrawerFragment extends Fragment {
     private int mCurrentSelectedPosition = 0;
     private boolean mFromSavedInstanceState;
     private boolean mUserLearnedDrawer;
+
+    List<NameValuePair> params;
+    static SharedPreferences pref;
+    ServerRequest sr;
 
     public NavigationDrawerFragment() {
     }
@@ -247,8 +261,15 @@ public class NavigationDrawerFragment extends Fragment {
             return true;
         }
 
+
         if (item.getItemId() == R.id.action_example) {
-            Toast.makeText(getActivity(), "Example action.", Toast.LENGTH_SHORT).show();
+            pref = this.getActivity().getSharedPreferences("AppPref", Context.MODE_PRIVATE);
+            SharedPreferences.Editor edit = pref.edit();
+            edit.clear();
+            edit.commit();
+
+            Intent logIntent = new Intent(this.getActivity(),LoginActivity.class);
+            startActivity(logIntent);
             return true;
         }
 
