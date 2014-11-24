@@ -9,6 +9,7 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -21,7 +22,8 @@ import android.widget.TextView;
 
 
 public class MainActivity extends Activity
-        implements NavigationDrawerFragment.NavigationDrawerCallbacks{
+        implements NavigationDrawerFragment.NavigationDrawerCallbacks,
+                    UsernameListFragment.OnUserSelectedListener{
 
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
@@ -58,7 +60,7 @@ public class MainActivity extends Activity
                 fragment = PlaceholderFragment.newInstance(position + 1);
                 break;
             case 1:
-                fragment = UserlistFragment.newInstance(position + 1);
+                fragment = UsernameListFragment.newInstance(position + 1);
                 break;
             case 2:
                 fragment = PlaceholderFragment.newInstance(position + 1);
@@ -128,6 +130,17 @@ public class MainActivity extends Activity
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void OnUserSelected(String param) {
+        // Capture the Userprofile Fragment from the activity layout
+        UserprofileFragment upFragment = UserprofileFragment.newInstance(param);
+        FragmentManager fragmentManager = getFragmentManager();
+        fragmentManager.beginTransaction()
+                .replace(R.id.container, upFragment)
+                .addToBackStack(null)
+                .commit();
     }
 
     /**

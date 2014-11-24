@@ -1,29 +1,34 @@
 package com.eis.transteinle.gigloungepoc;
 
 import android.app.Activity;
-import android.app.FragmentManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link UserlistFragment.OnFragmentInteractionListener} interface
+ * {@link UserprofileFragment.OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link UserlistFragment#newInstance} factory method to
+ * Use the {@link UserprofileFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class UserlistFragment extends Fragment {
+public class UserprofileFragment extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
+    private static final String ARG_PARAM1 = "param1";
+    private static final String ARG_PARAM2 = "param2";
 
     // TODO: Rename and change types of parameters
-    private static final String ARG_SECTION_NUMBER = "section_number";
+    private String mParam1;
+    private String mParam2;
+
+    private TextView userTv;
 
     private OnFragmentInteractionListener mListener;
 
@@ -31,19 +36,19 @@ public class UserlistFragment extends Fragment {
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @param sectionNumber Parameter 1.
-     * @return A new instance of fragment UserlistFragment.
+     * @param param1 Parameter 1.
+     * @return A new instance of fragment UserprofileFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static UserlistFragment newInstance(int sectionNumber) {
-        UserlistFragment fragment = new UserlistFragment();
+    public static UserprofileFragment newInstance(String param1) {
+        UserprofileFragment fragment = new UserprofileFragment();
         Bundle args = new Bundle();
-        args.putInt(ARG_SECTION_NUMBER, sectionNumber);
+        args.putString(ARG_PARAM1, param1);
         fragment.setArguments(args);
         return fragment;
     }
 
-    public UserlistFragment() {
+    public UserprofileFragment() {
         // Required empty public constructor
     }
 
@@ -51,33 +56,14 @@ public class UserlistFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
-
         // Inflate the layout for this fragment
-        View rootView =  inflater.inflate(R.layout.fragment_ul_container, container, false);
+        View view = inflater.inflate(R.layout.fragment_userprofile, container, false);
 
-        // Check that the activity is using the layout version with
-        // the fragment_ul_container FrameLayout
-        if (rootView.findViewById(R.id.fragment_ul_container) != null) {
+        Bundle bundle = getArguments();
+        userTv = (TextView)view.findViewById(R.id.usern);
+        userTv.setText(bundle.getString(ARG_PARAM1));
 
-            // However, if we're being restored from a previous state,
-            // then we don't need to do anything and should return or else
-            // we could end up with overlapping fragments.
-            if (savedInstanceState != null) {
-                return rootView;
-            }
-
-            // Create a new Fragment to be placed in the activity layout
-            UsernameListFragment ulFragment = new UsernameListFragment();
-
-            // In case this activity was started with special instructions from an
-            // Intent, pass the Intent's extras to the fragment as arguments
-            //ulFragment.setArguments(getIntent().getExtras());
-            FragmentManager fragmentManager = getFragmentManager();
-            fragmentManager.beginTransaction()
-                    .add(R.id.fragment_ul_container, ulFragment).commit();
-        }
-        return rootView;
+        return view;
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -89,10 +75,7 @@ public class UserlistFragment extends Fragment {
 
     @Override
     public void onAttach(Activity activity) {
-
         super.onAttach(activity);
-        ((MainActivity) activity).onSectionAttached(
-                getArguments().getInt(ARG_SECTION_NUMBER));
     }
 
     @Override
