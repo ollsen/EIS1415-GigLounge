@@ -1,3 +1,4 @@
+var http = require('http');
 var express = require('express');
 var path = require('path');
 var favicon = require('serve-favicon');
@@ -5,14 +6,27 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var methodOverride = require('method-override');
+var faye = require('faye');
 
-/* Database */
-var dbConfig = require('./db');
-var mongoose = require('mongoose');
-mongoose.connect(dbConfig.url);
+var db = require('./db');
+var User = require('./models/user')
+var Band = require('./models/band')
+var Audio = require('./models/audio')
+
+/* Faye */
+var bayeux = new faye.NodeAdapter({
+    mount: '/faye',
+    timeout: 45
+});
 
 var app = express();
+var server = http.createServer(app);
 
+bayeux.attach(server);
+
+bayeux.on('handshake', function(clientId) {
+    console.log('client connected ', clientId);
+});
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
@@ -21,18 +35,20 @@ app.set('view engine', 'jade');
 //app.use(favicon(__dirname + '/public/favicon.ico'));
 app.use(logger('dev'));
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.urlencoded());
+app.use(methodOverride(function(req, res) {
+    if (typeof req.body === 'object') {
+        if (req.body._method) {
+            // look in urlencoded POST bodies and delete it
+            var method = req.body._method;
+            delete req.body._method;
+            return method;
+        }
+    }
+}));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use(methodOverride(function(req, res) {
-    if (req.body && typeof req.body === 'object' in req.body) {
-        // look in urlencoded POST bodies and delete it
-        var method = req.body._method;
-        delete req.body._method;
-        return method;
-    }
-}));
 
 /* Configuring Passport */
 var passport = require('passport');
@@ -52,10 +68,12 @@ var routes = require('./routes/index')(passport);
 var users = require('./routes/users')(passport);
 var bands = require('./routes/bands')(passport);
 var record = require('./routes/record')(passport);
+var pubsub = require('./routes/pubsub')(passport);
 app.use('/', routes);
 app.use('/users', users);
 app.use('/bands', bands);
 app.use('/record', record);
+app.use('/pubsub', pubsub);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -89,6 +107,4 @@ app.use(function(err, req, res, next) {
 });
 
 var port = process.env.PORT || 3000;
-app.listen(port);
-
-module.exports = app;
+server.listen(port);

@@ -1,0 +1,21 @@
+extends ../layout
+
+block content
+    div.container
+        div.row
+            div.col-sm-6.col-md-4.col-md-offset-4
+                #band
+                    h1.text-center.login-title #{band.bandName}'s profile:
+                    ul.band-details
+                        li Name ---> #{band.bandName}
+                        li Land ---> #{band.country}
+                        li Stadt ---> #{band.city}
+                        li Genre ---> #{band.genre}
+                        li Mitglieder
+                            ul#member
+                                for member in band.members
+                                    li 
+                                        a(href='/users/#{member.username}') #{member.username}
+                    for member in band.members
+                        if user.username == member.username
+                            a(href='/bands/#{band.id}/edit') Edit

@@ -17,8 +17,10 @@
     "passport": "*",
     "passport-local": "*",
     "express-session": "*",
-    "mongoose": "*",
+    "mongoose": "~3.7",
+    "gridfs-stream": "*",
     "bcrypt-nodejs": "*",
-    "connect-flash": "*"
+    "connect-flash": "*",
+    "connect": "*"
   }
 }

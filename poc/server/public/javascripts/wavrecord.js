@@ -54,7 +54,7 @@ function stopRecording(button) {
 
 function createDownloadLink() {
     recorder && recorder.exportWAV(function(blob) {
-        var url = URL.createObjectURL(blob);
+        /*var url = URL.createObjectURL(blob);
         var li = document.createElement('li');
         var au = document.createElement('audio');
         var hf = document.createElement('a');
@@ -67,7 +67,7 @@ function createDownloadLink() {
         hf.innerHTML = hf.download;
         li.appendChild(au);
         li.appendChild(hf);
-        document.getElementById("recordingslist").appendChild(li);
+        document.getElementById("recordingslist").appendChild(li);*/
     });
 }
 

@@ -1,6 +1,6 @@
 var mongoose = require('mongoose');
 
-module.exports = mongoose.model('User', {
+var MyModel = new mongoose.Schema({
     username: String,
     password: String,
     email: String,
@@ -12,3 +12,5 @@ module.exports = mongoose.model('User', {
     bands: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Band'}],
     auTracks: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Audio'}]
 });
+
+module.exports = mongoose.model('User', MyModel);

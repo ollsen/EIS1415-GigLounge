@@ -1,9 +1,10 @@
 var express = require('express');
 var router = express.Router();
 var title = 'GigLounge - Proof of Concepts';
-var User = require('../models/user')
-var Band = require('../models/band')
-var mongoose = require('mongoose');
+var db = require('../db');
+var User = db.model('User');
+
+var Band = db.model('Band');
 
 
 
@@ -43,40 +44,50 @@ module.exports = function(passport) {
     
     /* Handle POST Bandcreation */
     router.post('/new', isAuthenticated, function(req, res) {
-        User.findOne({ username : req.body.creator}, function(err, creator) {
-            return Band.findOne().sort({id: -1}).limit(1).exec(function(err, band) {
-                var newBand = new Band();
-                if(band)
-                    newBand.id = parseInt(band.id)+1;
-                else
-                    newBand.id = 1;
-                console.log("user id: "+req.body.userId);
-                newBand.bandName = req.body.bandName;
-                newBand.country = req.body.country;
-                newBand.city = req.body.city;
-                newBand.genre = req.body.genre;
-                newBand.members.push(creator)
-                return newBand.save(function (err) {
-                    if (!err) {
-                        console.log("created with id: "+newBand.id);
-                    } else {
-                        console.log(err);
-                    }
-                    Band.findOne({ id: newBand.id}).exec(function(err, band) {
-                        creator.bands.push(band);
-                        creator.save(function(err) {
-                            if (!err) {
-                                console.log("push succeeded");
-                            } else {
-                                console.log(err);
-                            }
-                        });
+        return Band.findOne().sort({id: -1}).limit(1).exec(function(err, band) {
+            var newBand = new Band();
+            if(band)
+                newBand.id = parseInt(band.id)+1;
+            else
+                newBand.id = 1;
+            newBand.bandName = req.body.bandName;
+            newBand.country = req.body.country;
+            newBand.city = req.body.city;
+            newBand.genre = req.body.genre;
+            newBand.members.push(req.user)
+            return newBand.save(function (err) {
+                if (!err) {
+                    console.log("created with id: "+newBand.id);
+                } else {
+                    console.log(err);
+                }
+                Band.findOne({ id: newBand.id}).exec(function(err, band) {
+                    req.user.bands.push(band);
+                    req.user.save(function(err) {
+                        if (!err) {
+                            console.log("push succeeded");
+                        } else {
+                            console.log(err);
+                        }
                     });
-
-                    return res.redirect('./');
                 });
+                return res.redirect('./');
             });
         });
+    });
+    
+    /* GET user Profile */
+    router.get('/:id', isAuthenticated, function(req, res) {
+        Band.findOne({ id : req.params.id }).populate('members').exec(function(err, db_band){
+            if(err) {}
+            res.render('bands/profile', {
+                title: title,
+                user: req.user,
+                band: db_band,
+                message: req.flash('message')
+            });
+        });
+        
     });
     
     

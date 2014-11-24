@@ -13,6 +13,8 @@ html
     <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
     <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
+    
+    script(src='/javascripts/vendor/jquery/jquery.min.js')
   body
     nav.navbar.navbar-inverse.navbar-fixed-top(role='navigation')
         div.container
@@ -35,7 +37,6 @@ html
                         li
                             a(href='/record') Aufnahme
                         li
-                            a(href='/pubsub') Faye
+                            a(href='/pubsub/message') Faye
     block content
-    script(src='/javascripts/vendor/jquery/jquery.min.js')
     script(src='/javascripts/vendor/bootstrap-javascript/bootstrap.min.js')

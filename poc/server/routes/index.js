@@ -1,6 +1,11 @@
 var express = require('express');
 var router = express.Router();
 var title = 'GigLounge - Proof of Concepts';
+var faye = require('faye');
+var db = require('../db');
+var User = db.model('User');
+
+var client = new faye.Client('http://localhost:3000/faye', { timeout: 20 });
 
 var isAuthenticated = function(req, res, next) {
     //if user is authenticated in the session, call the next() to call the next request handler
@@ -49,8 +54,9 @@ module.exports = function(passport) {
     router.get('/home', isAuthenticated, function(req,res) {
         res.render('home', { 
             title: title,
-            user: req.user 
+            user: req.user
         });
+        client.publish('/channel', { text: 'system: '+req.user.username+' hat sich eingeloggt'});
     });
     
     /* Handle Logout */
@@ -59,5 +65,30 @@ module.exports = function(passport) {
         res.redirect('/');
     });
     
+    /* Handle login POST for mobile */
+    router.post('/mlogin', passport.authenticate('login', {
+        successRedirect: '/profilejson',
+        failureFlash: true
+    }));
+    
+    /* Handle Registration POST */
+    router.post('/msignup', passport.authenticate('signup', {
+        failureFlash: true
+    }), function(req, res) {
+        res.json({response: req.user.username});
+    });
+    
+    /* Handle json profile for mobile */
+    router.get('/profilejson', isAuthenticated, function(req,res) {
+        res.json(req.user);
+    });
+    
+    /* Handle mobile Logout */
+    router.get('/msignout', function(req, res) {
+        req.logout();
+        res.json({logout: true})
+    });
+    
     return router;
 }
+

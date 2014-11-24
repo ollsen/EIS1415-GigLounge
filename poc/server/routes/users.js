@@ -1,7 +1,10 @@
 var express = require('express');
 var router = express.Router();
+var methodOverride = require('method-override');
 var title = 'GigLounge - Proof of Concepts';
-var User = require('../models/user')
+var db = require('../db');
+//var User = require('../models/user')
+var User = db.model('User');
 
 
 
@@ -16,11 +19,12 @@ var isAuthenticated = function(req, res, next) {
 }
 
 module.exports = function(passport) {
+    
     /* GET users listing. */
     router.get('/', isAuthenticated, function(req, res) {
         var userlist = User.find({},function(err, db_users){
             if(err) {}
-            res.render('users/users', {
+            res.render('users/index', {
             title: title,
             user: req.user,
             userlist: db_users,
@@ -33,13 +37,12 @@ module.exports = function(passport) {
     
     /* GET user Profile */
     router.get('/:username', isAuthenticated, function(req, res) {
-        User.findOne({ username : req.params.username }).populate('bands').exec(function(err, db_user){
+        User.findOne({ username : req.params.username }).populate('bands').populate('auTracks').exec(function(err, db_user){
             if(err) {}
             res.render('users/profile', {
                 title: title,
                 user: req.user,
                 userprofile: db_user,
-                bands: db_user.populate('bands'),
                 message: req.flash('message')
             });
         });
@@ -56,7 +59,7 @@ module.exports = function(passport) {
     });
     
     /* HANDLE PUT Profile */
-    router.post('/:username/edit', isAuthenticated, function(req, res) {
+    router.put('/:username/edit', isAuthenticated, function(req, res) {
         return User.findOne({username : req.params.username}, function(err, db_user) {
             db_user.email = req.body.email;
             db_user.firstName = req.body.firstName;
@@ -76,5 +79,15 @@ module.exports = function(passport) {
         });
     });
 
+    /* Handle DELETE Profile */
+    router.delete('/:username/delete', isAuthenticated, function(req, res) {
+        console.log(req.params.id);
+        return User.remove({_id: req.user._id}, function(err){
+            if(err)
+                res.json(err);
+            else
+                res.redirect('/home');
+        });
+    });
     return router;
 }

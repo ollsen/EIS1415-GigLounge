@@ -19,5 +19,13 @@ block content
                                 for band in userprofile.bands
                                     li 
                                         a(href='/bands/#{band.id}') #{band.bandName}
+                        li Audio
+                            ul#audio
+                                for audio in userprofile.auTracks
+                                    li
+                                        audio(controls='true', src='#{audio.file}')
                     if userprofile.username == user.username
                         a(href='/users/#{user.username}/edit') Edit
+                        form(class='form-signin', method='POST', action='/users/#{user.username}/delete')
+                            input(type='hidden' name='_method' value='DELETE')
+                            button(class='btn btn-lg btn-primary btn-block', type='submit') Delete Account
