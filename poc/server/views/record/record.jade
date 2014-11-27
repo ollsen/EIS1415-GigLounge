@@ -12,6 +12,13 @@ block content
         
         h2 Log
         pre#log
+        div.row
+            div.col-sm-6.col-md-4.col-md-offset-4
+                #fileupload
+                    form(action='/record/add', method='POST',enctype='multipart/form-data')
+                        input(name='Audiodatei', type='file', accept='audio/*', required)
+                        button(class='btn btn-lg btn-primary btn-block', type='submit') Upload
+                        span.clearfix
         
     
     script(src='/javascripts/wavrecord.js')

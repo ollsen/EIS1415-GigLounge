@@ -1,13 +1,25 @@
 package com.eis.transteinle.gigloungepoc;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.TextView;
+
+import org.apache.http.NameValuePair;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -24,11 +36,19 @@ public class UserprofileFragment extends Fragment {
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
+    private static ProgressDialog pDialog;
+
+
+    ServerRequest sr;
+
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
 
     private TextView userTv;
+    private TextView fNameTv;
+    private TextView lNameTv;
+    private TextView emailTv;
 
     private OnFragmentInteractionListener mListener;
 
@@ -60,8 +80,19 @@ public class UserprofileFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_userprofile, container, false);
 
         Bundle bundle = getArguments();
+        String usern = bundle.getString(ARG_PARAM1);
+
+
         userTv = (TextView)view.findViewById(R.id.usern);
-        userTv.setText(bundle.getString(ARG_PARAM1));
+        fNameTv = (TextView)view.findViewById(R.id.fName);
+        lNameTv = (TextView)view.findViewById(R.id.lName);
+        emailTv = (TextView)view.findViewById(R.id.uEmail);
+
+        new DownloadJSON().execute(usern);
+
+        //sr = new ServerRequest(this.getActivity());
+        //JSONObject json = sr.getJSON("http://h2192129.stratoserver.net/users/mlist/"+usern, null);
+        //List<String> list = new ArrayList<String>();
 
         return view;
     }
@@ -97,6 +128,56 @@ public class UserprofileFragment extends Fragment {
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         public void onFragmentInteraction(Uri uri);
+    }
+
+    private class DownloadJSON extends AsyncTask<String, String,JSONObject> {
+
+        @Override
+        protected JSONObject doInBackground(String... params) {
+            sr = new ServerRequest(getActivity());
+            //JSONObject json = sr.getJSON("http://h2192129.stratoserver.net/users/mlist", null);
+
+            JSONObject json = sr.getJSONFromUrl("http://h2192129.stratoserver.net/users/mlist/"+params[0], null);
+
+            return json;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+
+            pDialog = new ProgressDialog(getActivity());
+            pDialog.setMessage("Please wait...");
+            pDialog.setCancelable(false);
+            pDialog.setIndeterminate(true);
+            pDialog.show();
+        }
+
+        @Override
+        protected void onPostExecute(JSONObject json) {
+            super.onPostExecute(json);
+
+            if (json != null) {
+                try {
+                    String jsonstr = json.toString();
+                    Log.v("Login", "response: " + jsonstr);
+                    String uname = json.getString("username");
+                    String email = json.getString("email");
+                    String fname = json.getString("firstName");
+                    String lname = json.getString("lastName");
+                    userTv.setText(uname);
+                    fNameTv.setText(fname);
+                    lNameTv.setText(lname);
+                    emailTv.setText(email);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            if(pDialog.isShowing()) {
+                pDialog.dismiss();
+            }
+        }
     }
 
 }

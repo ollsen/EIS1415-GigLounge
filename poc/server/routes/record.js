@@ -1,9 +1,26 @@
 var express = require('express');
 var router = express.Router();
 var title = 'GigLounge - Proof of Concepts';
-var db = require('../db');
-var User = db.model('User');
-var Audio = db.model('Audio');
+//var db = require('../db');
+
+var url = 'mongodb://localhost/poc';
+var busboy = require('connect-busboy');
+/* Database */
+var dbConfig = require('../db');
+var mongoose = require('mongoose');
+var Grid = require('gridfs-stream');
+Grid.mongo = mongoose.mongo;
+var conn = mongoose.createConnection(url);
+var gfs;
+//mongoose.connect(dbConfig.url);
+//var db = mongoose.connection;
+conn.once('open', function() {
+    gfs = Grid(conn.db);
+});
+//db.model()
+var User = conn.model('User');
+var Audio = conn.model('Audio');
+
 
 
 
@@ -28,12 +45,24 @@ module.exports = function(passport) {
     });
     
     router.post('/add', isAuthenticated, function(req, res) {
+        var docId = mongoose.Types.ObjectId(req.query.docId);
+        var fstream;
+        req.pipe(req.busboy);
+        req.busboy.on('file', function(fieldname, file, filename) {
+            console.log("Uploading: "+ filename);
+            fstream = gfs.createWriteStream({
+                _id: docId,
+                filename: filename
+            });
+            file.pipe(fstream);
+        });
         var audio = new Audio();
         audio._creator = req.user._id;
-        audio.file = req.body.audiofile;
+        audio.file = docId;
+        
         return audio.save(function (err) {
             if (!err) {
-                console.log("created with id: "+audio._id);
+                console.log("created with id: "+audio._id+"docId: "+docId);
             } else {
                 console.log(err);
             }
@@ -47,6 +76,14 @@ module.exports = function(passport) {
             });
             return res.redirect('/home');
         });
+    });
+    
+    router.get('/play/:_id', isAuthenticated, function(req, res) {
+        res.set('Content-Type', 'audio/*');
+        var readstream = gfs.createReadStream({
+            _id: req.params._id
+        });
+        readstream.pipe(res);
     });
 
     return router;

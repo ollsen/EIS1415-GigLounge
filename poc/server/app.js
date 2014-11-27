@@ -7,6 +7,7 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var methodOverride = require('method-override');
 var faye = require('faye');
+var busboy = require('connect-busboy');
 
 var db = require('./db');
 var User = require('./models/user')
@@ -59,6 +60,8 @@ app.use(passport.session());
 
 var flash = require('connect-flash');
 app.use(flash());
+
+app.use(busboy());
 
 var initPassport = require('./passport/init');
 initPassport(passport);

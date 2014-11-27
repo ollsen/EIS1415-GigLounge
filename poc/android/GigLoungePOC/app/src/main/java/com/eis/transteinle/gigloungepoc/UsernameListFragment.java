@@ -3,8 +3,10 @@ package com.eis.transteinle.gigloungepoc;
 import android.app.Activity;
 import android.app.Dialog;
 import android.app.FragmentManager;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.util.Log;
@@ -24,9 +26,11 @@ import com.eis.transteinle.gigloungepoc.dummy.DummyContent;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -46,6 +50,13 @@ public class UsernameListFragment extends Fragment implements AbsListView.OnItem
     static SharedPreferences pref;
     Dialog reset;
     ServerRequest sr;
+    View view;
+    ArrayList<String> list = new ArrayList<String>();
+    Context context;
+    ArrayAdapter<String> adapter;
+
+    private static ProgressDialog pDialog;
+
 
 
 
@@ -81,44 +92,19 @@ public class UsernameListFragment extends Fragment implements AbsListView.OnItem
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_item, container, false);
+        view = inflater.inflate(R.layout.fragment_item, container, false);
         pref = this.getActivity().getSharedPreferences("AppPref", Context.MODE_PRIVATE);
+        context = view.getContext();
         params = new ArrayList<NameValuePair>();
         params.add(new BasicNameValuePair("username", pref.getString("username","")));
         params.add(new BasicNameValuePair("password", pref.getString("password","")));
-        sr = new ServerRequest();
-        JSONObject json = sr.getJSON("http://h2192129.stratoserver.net/users/mlist", params);
-        if (json != null) {
-            try {
-                String jsonstr = json.toString();
-                Log.v("Users","response: "+jsonstr);
-                String user = json.getString("username");
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        }
-
-
-
+        new DownloadJSON().execute(params);
         // Set the adapter
         mListView = (AbsListView) view.findViewById(android.R.id.list);
         ((AdapterView<ListAdapter>) mListView).setAdapter(mAdapter);
 
-        String[] values = new String[] { "Android", "iPhone", "WindowsMobile",
-                "Blackberry", "WebOS", "Ubuntu", "Windows7", "Max OS X",
-                "Linux", "OS/2", "Ubuntu", "Windows7", "Max OS X", "Linux",
-                "OS/2", "Ubuntu", "Windows7", "Max OS X", "Linux", "OS/2",
-                "Android", "iPhone", "WindowsMobile" };
 
-        final ArrayList<String> list = new ArrayList<String>();
-        for (int i = 0; i < values.length; ++i) {
-            list.add(values[i]);
-        }
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(view.getContext(),
-                android.R.layout.simple_list_item_1, android.R.id.text1, values);
-
-        mListView.setAdapter(adapter);
 
         // Set OnItemClickListener so we can be notified on item clicks
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -131,6 +117,7 @@ public class UsernameListFragment extends Fragment implements AbsListView.OnItem
                 }
             }
         });
+
         return view;
     }
 
@@ -191,6 +178,66 @@ public class UsernameListFragment extends Fragment implements AbsListView.OnItem
     public interface OnUserSelectedListener {
         // TODO: Update argument type and name
         public void OnUserSelected(String param);
+    }
+
+    private class DownloadJSON extends AsyncTask<List<NameValuePair>, String,JSONObject> {
+
+        @Override
+        protected JSONObject doInBackground(List<NameValuePair>... params) {
+            sr = new ServerRequest(context);
+
+            JSONObject json = sr.getJSONFromUrl("http://h2192129.stratoserver.net/users/mlist", null);
+
+            return json;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+
+            pDialog = new ProgressDialog(view.getContext());
+            pDialog.setMessage("Please wait...");
+            pDialog.setCancelable(false);
+            pDialog.setIndeterminate(true);
+            pDialog.show();
+        }
+
+        @Override
+        protected void onPostExecute(JSONObject json) {
+            super.onPostExecute(json);
+            Log.d("onPostJson",json.toString());
+            if (json != null) {
+                try {
+                    JSONArray jsonArray = json.getJSONArray("users");
+                    Log.v("Users","Count: "+jsonArray.length());
+                    list = new ArrayList<String>();
+                    for (int i = 0; i < jsonArray.length(); ++i) {
+                        JSONObject u = jsonArray.getJSONObject(i);
+                        list.add(u.getString("username"));
+                    }
+                    Integer size = new Integer(list.size());
+                    Log.d("list", size.toString());
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+                adapter = new ArrayAdapter<String>(view.getContext(),
+                        android.R.layout.simple_list_item_1, android.R.id.text1, list);
+
+                mListView.setAdapter(adapter);
+
+
+                adapter.notifyDataSetChanged();
+
+
+
+
+
+            }
+            if(pDialog.isShowing()) {
+                pDialog.dismiss();
+            }
+        }
     }
 
 }

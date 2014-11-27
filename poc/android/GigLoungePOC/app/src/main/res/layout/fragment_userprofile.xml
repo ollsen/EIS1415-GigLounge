@@ -11,6 +11,8 @@
         android:layout_height="fill_parent"
         android:layout_gravity="center_horizontal|top">
 
+
+
         <LinearLayout
             android:orientation="horizontal"
             android:layout_width="550px"
@@ -19,7 +21,7 @@
             android:layout_marginTop="30px">
 
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="220px"
                 android:layout_height="wrap_content"
                 android:text="Username"
                 android:id="@+id/usernLabel"
@@ -32,11 +34,90 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="right"
-                android:text="Placeholder"
+                android:text=""
                 android:id="@+id/usern"
                 android:layout_marginLeft="10px"
                 android:layout_marginRight="10px" />
 
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="550px"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="30px" >
+
+            <TextView
+                android:layout_width="220px"
+                android:layout_height="wrap_content"
+                android:text="Vorname"
+                android:id="@+id/fNameLabel"
+                android:layout_gravity="left"
+                android:layout_marginRight="10px"
+                android:layout_marginLeft="10px"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:text=""
+                android:id="@+id/fName"
+                android:layout_marginLeft="10px"
+                android:layout_marginRight="10px" />
+        </LinearLayout>
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="550px"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="30px" >
+
+            <TextView
+                android:layout_width="220px"
+                android:layout_height="wrap_content"
+                android:text="Nachname"
+                android:id="@+id/lNameLabel"
+                android:layout_gravity="left"
+                android:layout_marginRight="10px"
+                android:layout_marginLeft="10px"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:text=""
+                android:id="@+id/lName"
+                android:layout_marginLeft="10px"
+                android:layout_marginRight="10px" />
+        </LinearLayout>
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="550px"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="30px" >
+
+            <TextView
+                android:layout_width="220px"
+                android:layout_height="wrap_content"
+                android:text="E-Mail"
+                android:id="@+id/uEmailLabel"
+                android:layout_gravity="left"
+                android:layout_marginRight="10px"
+                android:layout_marginLeft="10px"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:text=""
+                android:id="@+id/uEmail"
+                android:layout_marginLeft="10px"
+                android:layout_marginRight="10px" />
         </LinearLayout>
 
     </LinearLayout>

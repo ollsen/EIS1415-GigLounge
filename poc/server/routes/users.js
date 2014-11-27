@@ -35,6 +35,20 @@ module.exports = function(passport) {
         
     });
     
+    router.get('/mlist', isAuthenticated, function(req, res) {
+        var userlist = User.find({},'-_id username',function(err, db_users){
+            if(err) {}
+            res.json({users : db_users});
+        });
+    });
+    
+    router.get('/mlist/:username', isAuthenticated, function(req, res) {
+        User.findOne({ username : req.params.username }).populate('bands').populate('auTracks').exec(function(err, db_user){
+            if(err) {}
+            res.json(db_user);
+        });
+    });
+    
     /* GET user Profile */
     router.get('/:username', isAuthenticated, function(req, res) {
         User.findOne({ username : req.params.username }).populate('bands').populate('auTracks').exec(function(err, db_user){

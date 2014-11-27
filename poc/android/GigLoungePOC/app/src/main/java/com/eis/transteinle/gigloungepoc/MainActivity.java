@@ -24,8 +24,10 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -59,8 +61,11 @@ public class MainActivity extends Activity
         pref = getSharedPreferences("AppPref", MODE_PRIVATE);
         if (!pref.contains("username")) {
             Intent logIntent = new Intent(this, LoginActivity.class);
-            startActivity(logIntent);
             finish();
+            startActivity(logIntent);
+        } else {
+            //ServerRequest sr = new ServerRequest(MainActivity.this);
+            //JSONObject json = sr.getJSON("http://h2192129.stratoserver.net/home", null);
         }
 
         mNavigationDrawerFragment = (NavigationDrawerFragment)
@@ -81,10 +86,14 @@ public class MainActivity extends Activity
     public void onNavigationDrawerItemSelected(int position) {
         // update the main content by replacing fragments
 
-        Fragment fragment = new Fragment();
+        Fragment fragment;
         switch (position) {
             case 0:
-                fragment = PlaceholderFragment.newInstance(position + 1);
+                pref = getSharedPreferences("AppPref", MODE_PRIVATE);
+                if (pref.contains("username"))
+                    fragment = UserprofileFragment.newInstance(pref.getString("username", ""));
+                else
+                    fragment = PlaceholderFragment.newInstance(position + 1);
                 break;
             case 1:
                 fragment = UsernameListFragment.newInstance(position + 1);

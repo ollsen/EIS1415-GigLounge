@@ -21,6 +21,7 @@
     "gridfs-stream": "*",
     "bcrypt-nodejs": "*",
     "connect-flash": "*",
-    "connect": "*"
+    "connect": "*",
+    "connect-busboy": "*"
   }
 }
