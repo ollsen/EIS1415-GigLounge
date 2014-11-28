@@ -23,7 +23,8 @@ block content
                             ul#audio
                                 for audio in userprofile.auTracks
                                     li
-                                        audio(controls='true', src='http://localhost:3000/record/play/#{audio.file}')
+                                        audio(controls='true', src='http://localhost:3000/record/play/#{audio.file}', type='audio/m4a')
+                                        a(href='http://localhost:3000/record/play/#{audio.file}', download='#{audio.file}.m4a') Download File
                     if userprofile.username == user.username
                         a(href='/users/#{user.username}/edit') Edit
                         form(class='form-signin', method='POST', action='/users/#{user.username}/delete')

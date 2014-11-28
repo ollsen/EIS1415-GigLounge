@@ -92,6 +92,23 @@ module.exports = function(passport) {
             });
         });
     });
+    
+    /* HANDLE PUT reg_id for GCM */
+    router.put('/:username/putgcmid', isAuthenticated, function(req, res) {
+        return User.findOne({username : req.params.username}, function(err, db_user) {
+            console.log("REG_ID: "+req.body.reg_id);
+            db_user.reg_id = req.body.reg_id;
+            return db_user.save(function (err) {
+                if (!err) {
+                    console.log("updated");
+                } else {
+                    console.log(err);
+                }
+                
+                return res.redirect('./');
+            });
+        });
+    });
 
     /* Handle DELETE Profile */
     router.delete('/:username/delete', isAuthenticated, function(req, res) {

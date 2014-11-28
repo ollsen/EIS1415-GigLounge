@@ -2,6 +2,7 @@ package com.eis.transteinle.gigloungepoc;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -11,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.TextView;
 
 import org.apache.http.NameValuePair;
@@ -45,10 +47,13 @@ public class UserprofileFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
+    String usern;
+
     private TextView userTv;
     private TextView fNameTv;
     private TextView lNameTv;
     private TextView emailTv;
+    private Button chatBtn;
 
     private OnFragmentInteractionListener mListener;
 
@@ -80,7 +85,7 @@ public class UserprofileFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_userprofile, container, false);
 
         Bundle bundle = getArguments();
-        String usern = bundle.getString(ARG_PARAM1);
+       usern = bundle.getString(ARG_PARAM1);
 
 
         userTv = (TextView)view.findViewById(R.id.usern);
@@ -88,7 +93,20 @@ public class UserprofileFragment extends Fragment {
         lNameTv = (TextView)view.findViewById(R.id.lName);
         emailTv = (TextView)view.findViewById(R.id.uEmail);
 
+        chatBtn = (Button)view.findViewById(R.id.userChatBtn);
+
         new DownloadJSON().execute(usern);
+
+        chatBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Bundle args = new Bundle();
+                args.putString("to",usern);
+                Intent intent = new Intent(getActivity(), ChatActivity.class);
+                intent.putExtra("INFO", args);
+                startActivity(intent);
+            }
+        });
 
         //sr = new ServerRequest(this.getActivity());
         //JSONObject json = sr.getJSON("http://h2192129.stratoserver.net/users/mlist/"+usern, null);
@@ -137,7 +155,7 @@ public class UserprofileFragment extends Fragment {
             sr = new ServerRequest(getActivity());
             //JSONObject json = sr.getJSON("http://h2192129.stratoserver.net/users/mlist", null);
 
-            JSONObject json = sr.getJSONFromUrl("http://h2192129.stratoserver.net/users/mlist/"+params[0], null);
+            JSONObject json = sr.getJSONFromUrl("/users/mlist/"+params[0], null);
 
             return json;
         }

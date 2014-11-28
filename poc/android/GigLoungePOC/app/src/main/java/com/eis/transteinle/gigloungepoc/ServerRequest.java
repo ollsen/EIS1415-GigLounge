@@ -49,7 +49,7 @@ public class ServerRequest {
     private static final String COOKIE_VALUE = "cookieValue";
     private static final String COOKIE_DOMAIN = "cookieDomain";
 
-    private static final String domain = "h2192129.stratoserver.net";
+    private static final String domain = "192.168.178.55:3000";
 
     public ServerRequest(Context c){
         ctx = c;
@@ -82,10 +82,10 @@ public class ServerRequest {
             }
             HttpResponse httpResponse;
             if(params == null) {
-                HttpGet httpGet = new HttpGet(url);
+                HttpGet httpGet = new HttpGet("http://"+domain+url);
                 httpResponse = httpClient.execute(httpGet);
             } else {
-                HttpPost httpPost = new HttpPost(url);
+                HttpPost httpPost = new HttpPost("http://"+domain+url);
                 httpPost.setEntity(new UrlEncodedFormEntity(params));
                 httpResponse = httpClient.execute(httpPost);
             }
@@ -116,7 +116,7 @@ public class ServerRequest {
             e.printStackTrace();
         }
         try {
-            BufferedReader reader = new BufferedReader(new InputStreamReader(is, "iso-8859-1"));
+            BufferedReader reader = new BufferedReader(new InputStreamReader(is, "utf-8"));
             StringBuilder sb = new StringBuilder();
             String line = null;
             while ((line = reader.readLine()) != null) {

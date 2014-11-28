@@ -6,10 +6,12 @@ import android.app.ActionBar;
 import android.app.Dialog;
 import android.app.Fragment;
 import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -22,11 +24,17 @@ import android.view.ViewGroup;
 import android.support.v4.widget.DrawerLayout;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesUtil;
+import com.google.android.gms.gcm.GoogleCloudMessaging;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,12 +44,18 @@ public class MainActivity extends Activity
                     UsernameListFragment.OnUserSelectedListener{
 
 
-    List<NameValuePair> params;
     static SharedPreferences pref;
     Dialog reset;
     ServerRequest sr;
 
     String uname;
+
+    private final static int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
+    String SENDER_ID = "9169291799";
+    static final String TAG = "L2C";
+    GoogleCloudMessaging gcm;
+    Context context;
+    String regid;
 
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
@@ -58,14 +72,17 @@ public class MainActivity extends Activity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        context = getApplicationContext();
+
         pref = getSharedPreferences("AppPref", MODE_PRIVATE);
         if (!pref.contains("username")) {
             Intent logIntent = new Intent(this, LoginActivity.class);
             finish();
             startActivity(logIntent);
-        } else {
-            //ServerRequest sr = new ServerRequest(MainActivity.this);
-            //JSONObject json = sr.getJSON("http://h2192129.stratoserver.net/home", null);
+        } else if(!pref.contains("REG_ID")) {
+            if (checkPlayServices()) {
+                new RegisterGCM().execute();
+            }
         }
 
         mNavigationDrawerFragment = (NavigationDrawerFragment)
@@ -80,6 +97,21 @@ public class MainActivity extends Activity
 
 
 
+    }
+
+    private boolean checkPlayServices() {
+        int resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
+        if (resultCode != ConnectionResult.SUCCESS) {
+            if (GooglePlayServicesUtil.isUserRecoverableError(resultCode)) {
+                GooglePlayServicesUtil.getErrorDialog(resultCode, this,
+                        PLAY_SERVICES_RESOLUTION_REQUEST).show();
+            } else {
+                Log.i(TAG, "This device is not supported.");
+                finish();
+            }
+            return false;
+        }
+        return true;
     }
 
     @Override
@@ -175,8 +207,50 @@ public class MainActivity extends Activity
         FragmentManager fragmentManager = getFragmentManager();
         fragmentManager.beginTransaction()
                 .replace(R.id.container, upFragment)
+                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
                 .addToBackStack(null)
                 .commit();
+    }
+
+    private class RegisterGCM extends AsyncTask<String, String, String> {
+
+        @Override
+        protected String doInBackground(String... params) {
+            try {
+                if(gcm == null) {
+                    gcm = GoogleCloudMessaging.getInstance(context);
+                    regid = gcm.register(SENDER_ID);
+                    Log.e("RegId",regid);
+                    SharedPreferences.Editor edit = pref.edit();
+                    edit.putString("REG_ID", regid);
+                    edit.commit();
+                    sr = new ServerRequest(context);
+                    List<NameValuePair> param = new ArrayList<NameValuePair>();
+                    param.add(new BasicNameValuePair("_method","PUT"));
+                    param.add(new BasicNameValuePair("reg_id",regid));
+                    JSONObject json = sr.getJSONFromUrl("/users/"+pref.getString("username","")+"/putgcmid", param);
+                    if(json != null) {
+                        Log.d("PUTCGM", "reg_id: "+regid+" an "+pref.getString("username","")+" erfolgreich vergeben");
+                    } else {
+                        Log.e("PUTCGM", "reg_id: "+regid+" an "+pref.getString("username","")+" gescheitert");
+                    }
+                }
+                return regid;
+            } catch (IOException e) {
+                Log.e("Error", e.getMessage());
+                return "Fails";
+            }
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+        }
     }
 
     /**

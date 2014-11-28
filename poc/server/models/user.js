@@ -9,6 +9,7 @@ var MyModel = new mongoose.Schema({
     country: String,
     city: String,
     mInstrument: String,
+    reg_id: String,
     bands: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Band'}],
     auTracks: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Audio'}]
 });

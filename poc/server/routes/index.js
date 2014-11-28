@@ -4,6 +4,7 @@ var title = 'GigLounge - Proof of Concepts';
 var faye = require('faye');
 var db = require('../db');
 var User = db.model('User');
+var requests = require('../requests');
 
 var client = new faye.Client('http://localhost:3000/faye', { timeout: 20 });
 
@@ -87,6 +88,19 @@ module.exports = function(passport) {
     router.get('/msignout', function(req, res) {
         req.logout();
         res.json({logout: true})
+    });
+    
+    router.post('/send', function(req, res) {
+        var from = req.body.from;
+        var to = req.body.to;
+        console.log("from: "+req.body.from);
+        console.log("to: "+req.body.to);
+        console.log("to: "+req.body.msg);
+        var msg = req.body.msg;
+        requests.send(from, to, msg, function(found) {
+            console.log(found);
+            res.json(found)
+        });
     });
     
     return router;

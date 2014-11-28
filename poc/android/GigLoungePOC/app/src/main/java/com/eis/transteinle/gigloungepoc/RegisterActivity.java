@@ -59,7 +59,7 @@ public class RegisterActivity extends Activity {
                 params.add(new BasicNameValuePair("lastName", lastnametxt));
                 params.add(new BasicNameValuePair("password", passwordtxt));
                 ServerRequest sr = new ServerRequest(RegisterActivity.this);
-                JSONObject json = sr.getJSON("http://h2192129.stratoserver.net:3000/msignup", params);
+                JSONObject json = sr.getJSONFromUrl("/msignup", params);
                 if (json != null) {
                     try {
                         String jsonstr = json.getString("response");

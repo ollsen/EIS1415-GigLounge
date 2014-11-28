@@ -186,7 +186,7 @@ public class UsernameListFragment extends Fragment implements AbsListView.OnItem
         protected JSONObject doInBackground(List<NameValuePair>... params) {
             sr = new ServerRequest(context);
 
-            JSONObject json = sr.getJSONFromUrl("http://h2192129.stratoserver.net/users/mlist", null);
+            JSONObject json = sr.getJSONFromUrl("/users/mlist", null);
 
             return json;
         }

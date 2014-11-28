@@ -81,7 +81,7 @@ public class LoginActivity extends Activity {
         protected JSONObject doInBackground(List<NameValuePair>... params) {
             sr = new ServerRequest(LoginActivity.this);
 
-            JSONObject json = sr.getJSONFromUrl("http://h2192129.stratoserver.net/mlogin", params[0]);
+            JSONObject json = sr.getJSONFromUrl("/mlogin", params[0]);
 
             return json;
         }

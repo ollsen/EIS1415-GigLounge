@@ -79,7 +79,7 @@ module.exports = function(passport) {
     });
     
     router.get('/play/:_id', isAuthenticated, function(req, res) {
-        res.set('Content-Type', 'audio/*');
+        res.set('Content-Type', 'audio/m4a');
         var readstream = gfs.createReadStream({
             _id: req.params._id
         });
