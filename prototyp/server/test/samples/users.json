@@ -1,0 +1,59 @@
+{
+    "users": [
+        {
+            "username": "mail@example.com",
+            "password": "test",
+            "firstName": "Max",
+            "lastName": "Mustermann",
+            "country": "DE",
+            "city": "Cologne",
+            "postcode": "51063",
+            "instrument": ["drummer","guitarist"],
+            "free": true
+        },
+        {
+            "username": "mail2@example.de",
+            "password": "test",
+            "firstName": "Michael",
+            "lastName": "Schmidt",
+            "country": "DE",
+            "city": "Cologne",
+            "postcode": "50668",
+            "instrument": ["bassist"],
+            "free": false
+        },
+        {
+            "username": "mail3@example.org",
+            "password": "test",
+            "firstName": "Marco",
+            "lastName": "Ritter",
+            "country": "DE",
+            "city": "Cologne",
+            "postcode": "50667",
+            "instrument": ["drummer"],
+            "free": true
+        },
+        {
+            "username": "mail4@example.net",
+            "password": "test",
+            "firstName": "Karolin",
+            "lastName": "Fleischer",
+            "country": "DE",
+            "city": "Leverkusen",
+            "postcode": "51371",
+            "instrument": ["gitarrist"],
+            "free": true
+        },
+        {
+            "username": "mail5@example.biz",
+            "password": "test",
+            "firstName": "Silke",
+            "lastName": "Wirtz",
+            "country": "NL",
+            "city": "Amsterdam",
+            "postcode": "1012NX",
+            "instrument": ["drummer"],
+            "free": true
+        }
+    ]
+}

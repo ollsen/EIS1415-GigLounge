@@ -1,0 +1,13 @@
+{ "postcode": 51063,
+  "city": 'Cologne',
+  "country": 'Germany',
+  "name": 'Another Band',
+  "events": [],
+  "members": 
+   [ { "user": "54a015d0d011b3cf10c3a955",
+       "role": 'guitarist',
+       "permission": 3 } 
+   ],
+  "genre": [ 'Heavy Metal', 'Hard Rock' ],
+  "creation_date": Sun Dec 28 2014 15:38:08 GMT+0100 (CET) 
+}
