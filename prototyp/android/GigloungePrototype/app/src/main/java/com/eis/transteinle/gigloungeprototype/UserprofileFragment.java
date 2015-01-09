@@ -156,7 +156,6 @@ public class UserprofileFragment extends Fragment {
         @Override
         protected JSONObject doInBackground(String... params) {
             sr = new ServerRequest(getActivity());
-            //JSONObject json = sr.getJSON("http://h2192129.stratoserver.net/users/mlist", null);
 
             JSONObject json = sr.getJSONFromUrl("/users/mlist/"+params[0], null);
 

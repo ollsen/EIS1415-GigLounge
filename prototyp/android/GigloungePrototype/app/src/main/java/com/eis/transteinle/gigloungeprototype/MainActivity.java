@@ -25,6 +25,7 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import com.eis.transteinle.gigloungeprototype.connection.ServerRequest;
+import com.eis.transteinle.gigloungeprototype.user.UserFragment;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -45,6 +46,8 @@ public class MainActivity extends ActionBarActivity
 
     static SharedPreferences pref;
     ServerRequest sr;
+
+    private DlTask mDlTask = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,7 +74,15 @@ public class MainActivity extends ActionBarActivity
                 R.id.navigation_drawer,
                 (DrawerLayout) findViewById(R.id.drawer_layout));
 
-        new DownloadJSON().execute();
+        attemptDl();
+    }
+
+    private void attemptDl() {
+        if (mDlTask != null) {
+            return;
+        }
+        mDlTask = new DlTask();
+        mDlTask.execute();
     }
 
     @Override
@@ -81,11 +92,17 @@ public class MainActivity extends ActionBarActivity
         pref = getSharedPreferences("AppPref", MODE_PRIVATE);
         switch (position) {
             case 0:
-                if(pref.contains("email"))
+                if(pref.contains("id"))
                     //fragment = UserprofileFragment.newInstance(pref.getString("username", ""));
                     fragment = PlaceholderFragment.newInstance(position + 1);
                 else
                     fragment = PlaceholderFragment.newInstance(position + 1);
+                break;
+            case 1:
+                fragment = BandFragment.newInstance(position +1);
+                break;
+            case 2:
+                fragment = UserFragment.newInstance(pref.getString("id", ""));
                 break;
             default:
                 fragment = PlaceholderFragment.newInstance(position + 1);
@@ -148,12 +165,11 @@ public class MainActivity extends ActionBarActivity
         return super.onOptionsItemSelected(item);
     }
 
-    private class DownloadJSON extends AsyncTask<String, String,JSONObject> {
+    private class DlTask extends AsyncTask<String, String,JSONObject> {
 
         @Override
         protected JSONObject doInBackground(String... params) {
             sr = new ServerRequest(MainActivity.this);
-            //JSONObject json = sr.getJSON("http://h2192129.stratoserver.net/users/mlist", null);
 
             JSONObject json = sr.getJSONFromUrl("/home", null);
 
@@ -169,6 +185,7 @@ public class MainActivity extends ActionBarActivity
                 try {
                     Log.d("JSON", json.toString());
                     SharedPreferences.Editor edit = pref.edit();
+                    edit.putString("id", json.getString("_id"));
                     edit.putString("email", json.getString("email"));
                     edit.putString("firstName", json.getString("firstName"));
                     edit.putString("lastName", json.getString("lastName"));
@@ -178,6 +195,11 @@ public class MainActivity extends ActionBarActivity
                 }
             }
 
+        }
+
+        @Override
+        protected void onCancelled() {
+            mDlTask = null;
         }
     }
 
@@ -210,10 +232,6 @@ public class MainActivity extends ActionBarActivity
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
-            //final ActionBar actionBar = getActivity()
-            //actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
-
-
 
             View rootView = inflater.inflate(R.layout.fragment_main, container, false);
             return rootView;
@@ -224,27 +242,6 @@ public class MainActivity extends ActionBarActivity
             super.onAttach(activity);
             ((MainActivity) activity).onSectionAttached(
                     getArguments().getInt(ARG_SECTION_NUMBER));
-            ActionBar actionBar = ((ActionBarActivity)activity).getSupportActionBar();
-            actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
-
-            ActionBar.TabListener tabListener = new ActionBar.TabListener() {
-                @Override
-                public void onTabSelected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
-
-                }
-
-                @Override
-                public void onTabUnselected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
-
-                }
-
-                @Override
-                public void onTabReselected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
-
-                }
-            };
-
-            actionBar.newTab().setText("test").setTabListener(tabListener);
         }
     }
 
