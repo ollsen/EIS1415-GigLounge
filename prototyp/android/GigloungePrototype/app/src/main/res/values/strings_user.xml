@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Strings related to user profile -->
+    <string name="email">E-Mail</string>
+    <string name="firstName">First Name</string>
+    <string name="lastName">Last Name</string>
+    <string name="address">Adress</string>
+    <string name="postcode">Postcode</string>
+    <string name="city">City</string>
+    <string name="country">Country</string>
+    <string name="bands">Bands</string>
+    <string name="instruments">Playing instruments</string>
+</resources>

@@ -1,0 +1,137 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.eis.transteinle.gigloungeprototype.user.EditUserFragment">
+
+    <!-- Login progress -->
+    <ProgressBar android:id="@+id/edit_user_progress" style="?android:attr/progressBarStyleLarge"
+        android:layout_width="wrap_content" android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp" android:visibility="gone" />
+
+    <ScrollView android:id="@+id/edit_user_form" android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout android:id="@+id/email_sign_up_form" android:layout_width="match_parent"
+            android:layout_height="wrap_content" android:orientation="vertical"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="@string/email"
+                android:id="@+id/tvEmail"
+                android:textStyle="bold" />
+
+            <EditText android:id="@+id/email" android:layout_width="match_parent"
+                android:layout_height="wrap_content" android:hint="@string/email"
+                android:inputType="textEmailAddress" android:maxLines="1"
+                android:singleLine="true" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="@string/firstName"
+                android:id="@+id/tvFirstName"
+                android:textStyle="bold" />
+
+            <EditText android:id="@+id/first_name" android:layout_width="match_parent"
+                android:layout_height="wrap_content" android:hint="@string/firstName"
+                android:inputType="text"
+                android:maxLines="1" android:singleLine="true" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="@string/lastName"
+                android:id="@+id/tvLastName"
+                android:textStyle="bold" />
+
+            <EditText android:id="@+id/last_name" android:layout_width="match_parent"
+                android:layout_height="wrap_content" android:hint="@string/lastName"
+                android:inputType="text"
+                android:maxLines="1" android:singleLine="true" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="@string/address"
+                android:id="@+id/tvAddress"
+                android:textStyle="bold" />
+
+            <EditText android:id="@+id/address" android:layout_width="match_parent"
+                android:layout_height="wrap_content" android:hint="@string/address"
+                android:inputType="text"
+                android:maxLines="1" android:singleLine="true" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="@string/postcode"
+                android:id="@+id/tvPostcode"
+                android:textStyle="bold" />
+
+            <EditText android:id="@+id/postcode" android:layout_width="match_parent"
+                android:layout_height="wrap_content" android:hint="@string/postcode"
+                android:inputType="text"
+                android:maxLines="1" android:singleLine="true" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="@string/city"
+                android:id="@+id/tvCity"
+                android:textStyle="bold" />
+
+            <EditText android:id="@+id/city" android:layout_width="match_parent"
+                android:layout_height="wrap_content" android:hint="@string/city"
+                android:inputType="text"
+                android:maxLines="1" android:singleLine="true" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="@string/country"
+                android:id="@+id/tvCountry"
+                android:textStyle="bold" />
+
+            <EditText android:id="@+id/country" android:layout_width="match_parent"
+                android:layout_height="wrap_content" android:hint="@string/country"
+                android:inputType="text"
+                android:maxLines="1" android:singleLine="true" />
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="@string/instruments"
+                    android:id="@+id/tvInstruments"
+                    android:textStyle="bold" />
+
+                <ListView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/lvInstruments" />
+            </LinearLayout>
+
+            <Button android:id="@+id/save_btn" style="?android:textAppearanceSmall"
+                android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:layout_marginTop="16dp" android:text="@string/action_sign_up"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+    </ScrollView>
+
+</FrameLayout>

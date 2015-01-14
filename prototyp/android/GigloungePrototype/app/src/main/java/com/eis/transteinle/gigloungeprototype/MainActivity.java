@@ -64,6 +64,9 @@ public class MainActivity extends ActionBarActivity
                 new RegisterGCM().execute();
             }
         }*/
+        else {
+            attemptDl();
+        }
 
         mNavigationDrawerFragment = (NavigationDrawerFragment)
                 getSupportFragmentManager().findFragmentById(R.id.navigation_drawer);
@@ -73,8 +76,6 @@ public class MainActivity extends ActionBarActivity
         mNavigationDrawerFragment.setUp(
                 R.id.navigation_drawer,
                 (DrawerLayout) findViewById(R.id.drawer_layout));
-
-        attemptDl();
     }
 
     private void attemptDl() {

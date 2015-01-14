@@ -15,6 +15,7 @@ var MyModel = new mongoose.Schema({
     instrument: [String],
     free: { type: Boolean, default: false},
     gcmRegId: String,
+    avatar: mongoose.Schema.Types.ObjectId
 });
 
 module.exports = mongoose.model('User', MyModel);

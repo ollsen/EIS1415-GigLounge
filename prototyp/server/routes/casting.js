@@ -12,12 +12,9 @@ var Casting = db.model('Casting');
 /*
 * Setting up gridFS Stream for media uploads
 */
-Grid.mongo = mongoose.mongo;
-var url = 'mongodb://localhost/prototyp';
-var conn = mongoose.createConnection(url);
 var gfs;
-conn.once('open', function(){
-    gfs = Grid(conn.db);
+db.once('open', function(){
+    gfs = Grid(db.db);
 });
 
 var isAuthenticated = require('./auth');

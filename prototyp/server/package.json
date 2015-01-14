@@ -25,7 +25,6 @@
     "connect-busboy": "*",
     "request": "*",
     "node-gcm": "*",
-    // for testing, requires mocha
     "supertest": "*",
     "should": "*"
   }

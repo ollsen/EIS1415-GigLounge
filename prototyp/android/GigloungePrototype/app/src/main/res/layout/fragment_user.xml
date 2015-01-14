@@ -46,7 +46,7 @@
                     android:layout_marginRight="10dp"
                     android:layout_marginTop="10dp">
 
-                    <LinearLayout
+                    <RelativeLayout
                         android:orientation="horizontal"
                         android:layout_width="fill_parent"
                         android:layout_height="75px">
@@ -56,8 +56,17 @@
                             android:layout_height="wrap_content"
                             android:textAppearance="?android:attr/textAppearanceLarge"
                             android:text="Name"
-                            android:id="@+id/tvUsername" />
-                    </LinearLayout>
+                            android:id="@+id/tvUsername"
+                            android:textColor="@color/abc_primary_text_material_dark" />
+
+                        <Button
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentRight="true"
+                            android:text="Edit Profile"
+                            android:id="@+id/btnEditUser"
+                            android:visibility="gone"/>
+                    </RelativeLayout>
 
                     <LinearLayout
                         android:orientation="horizontal"
@@ -68,7 +77,8 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="City"
-                            android:id="@+id/tvCity" />
+                            android:id="@+id/tvCity"
+                            android:textColor="@color/abc_primary_text_material_dark" />
                     </LinearLayout>
                 </LinearLayout>
 
@@ -84,7 +94,8 @@
                         android:layout_height="wrap_content"
                         android:textAppearance="?android:attr/textAppearanceLarge"
                         android:text="Ratings"
-                        android:id="@+id/textView" />
+                        android:id="@+id/textView"
+                        android:textColor="@color/abc_primary_text_material_dark" />
 
                     <RatingBar
                         android:layout_width="wrap_content"
@@ -110,13 +121,15 @@
                             android:layout_height="wrap_content"
                             android:textAppearance="?android:attr/textAppearanceLarge"
                             android:text="Playing Instruments"
-                            android:id="@+id/tvTitleInstruments" />
+                            android:id="@+id/tvTitleInstruments"
+                            android:textColor="@color/abc_primary_text_material_dark" />
                     </LinearLayout>
 
                     <ListView
                         android:layout_width="wrap_content"
                         android:layout_height="60dp"
-                        android:id="@+id/listView" />
+                        android:id="@+id/listView"
+                        android:choiceMode="none" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -137,7 +150,8 @@
                             android:layout_height="wrap_content"
                             android:textAppearance="?android:attr/textAppearanceLarge"
                             android:text="Bands"
-                            android:id="@+id/tvTitleBands" />
+                            android:id="@+id/tvTitleBands"
+                            android:textColor="@color/abc_primary_text_material_dark" />
 
                         <Button
                             android:layout_width="wrap_content"
@@ -209,13 +223,14 @@
                             android:layout_height="wrap_content"
                             android:textAppearance="?android:attr/textAppearanceLarge"
                             android:text="Playing Instruments"
-                            android:id="@+id/tvTitleInstruments" />
+                            android:id="@+id/tvInstruments"
+                            android:textColor="@color/abc_primary_text_material_dark" />
                     </LinearLayout>
 
                     <ListView
                         android:layout_width="wrap_content"
                         android:layout_height="60dp"
-                        android:id="@+id/listView" />
+                        android:id="@+id/lvInstruments" />
                 </LinearLayout>
 
             </LinearLayout>

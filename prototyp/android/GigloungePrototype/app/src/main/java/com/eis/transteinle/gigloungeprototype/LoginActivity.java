@@ -4,6 +4,7 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.app.FragmentTransaction;
 import android.app.LoaderManager.LoaderCallbacks;
 import android.content.ContentResolver;
 import android.content.CursorLoader;
@@ -31,6 +32,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.eis.transteinle.gigloungeprototype.connection.ServerRequest;
+import com.eis.transteinle.gigloungeprototype.other.ServerAdressDialogFragment;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
@@ -76,6 +78,11 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
         setContentView(R.layout.activity_login);
 
         pref = getSharedPreferences("AppPref", MODE_PRIVATE);
+
+        FragmentTransaction ft = getFragmentManager().beginTransaction();
+
+        ServerAdressDialogFragment dialog = new ServerAdressDialogFragment();
+        dialog.show(ft, "dialog");
 
         // Set up the login form.
         mEmailView = (AutoCompleteTextView) findViewById(R.id.email);

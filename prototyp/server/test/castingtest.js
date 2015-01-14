@@ -67,8 +67,8 @@ describe('casting', function(){
         it('should login', function(done){
             useragent
                 .post('/login')
-                .send({ username: usamples.users[0].username,
-                        password: usamples.users[0].password
+                .send({ username: usamples.users[4].username,
+                        password: usamples.users[4].password
                         })
                 .expect(200, done);
         });
@@ -93,6 +93,19 @@ describe('casting', function(){
                         }
                     });
                 });
+            });
+        });
+        it('should add avatar', function(done){
+            useragent
+                .post('/users/'+userId+'/avatar')
+                .attach('media', 'test/samples/fff.jpg')
+                .end(function(err, res){
+                    if(err){ console.log(err);}
+                    res.body.message.should.equal('avatar added');
+                    mediaId = res.body.id;
+                    setTimeout(function(){
+                        done()
+                    }, 1900);
             });
         });
     });
@@ -327,7 +340,9 @@ describe('casting', function(){
                     if(err){ console.log(err);}
                     res.body.message.should.equal('Media added');
                     mediaId = res.body.id;
-                    done();
+                    setTimeout(function(){
+                        done()
+                    }, 1900);
             });
         });
         
@@ -339,13 +354,13 @@ describe('casting', function(){
     });
     
     after(function(done){
-        User.remove({}, function(err){
+        /*User.remove({}, function(err){
             if(err)
                 console.log(err);
             else {
                 console.log('users removed');
             }
-        });
+        });*/
         Band.remove({}, function(err){
             if(err)
                 console.log(err);

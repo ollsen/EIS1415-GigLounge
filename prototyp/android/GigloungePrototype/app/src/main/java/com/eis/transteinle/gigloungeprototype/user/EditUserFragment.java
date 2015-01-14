@@ -4,19 +4,17 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import com.eis.transteinle.gigloungeprototype.R;
@@ -28,12 +26,12 @@ import org.json.JSONObject;
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link UserFragment.OnFragmentInteractionListener} interface
+ * {@link EditUserFragment.OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link UserFragment#newInstance} factory method to
+ * Use the {@link EditUserFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class UserFragment extends Fragment {
+public class EditUserFragment extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -45,38 +43,36 @@ public class UserFragment extends Fragment {
 
     private User user;
 
-    private OnFragmentInteractionListener mListener;
-
     ServerRequest sr;
     DlTask mDlTask;
 
-    static SharedPreferences pref;
-
-    private TextView tvName;
-    private TextView tvCity;
-
-    private Button btnEdit;
+    private EditText etEmail, etFirstName, etLastName, etCountry, etCity, etPostcode
+            ,etAddress;
 
     private View mProgressView;
-    private View mProfileView;
+    private View mEditProfileView;
+
+    static SharedPreferences pref;
+
+    private OnFragmentInteractionListener mListener;
 
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
      * @param param1 Parameter 1.
-     * @return A new instance of fragment UserFragment.
+     * @return A new instance of fragment EditUserFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static UserFragment newInstance(String param1) {
-        UserFragment fragment = new UserFragment();
+    public static EditUserFragment newInstance(String param1) {
+        EditUserFragment fragment = new EditUserFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         fragment.setArguments(args);
         return fragment;
     }
 
-    public UserFragment() {
+    public EditUserFragment() {
         // Required empty public constructor
     }
 
@@ -85,48 +81,40 @@ public class UserFragment extends Fragment {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
+            mParam2 = getArguments().getString(ARG_PARAM2);
         }
-        setRetainInstance(true);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_user, container, false);
+        View view = inflater.inflate(R.layout.fragment_edit_user, container, false);
         Bundle bundle = getArguments();
-        //String usern =
         user = new User();
-        user.setId(bundle.getString(ARG_PARAM1));
-        btnEdit = (Button)view.findViewById(R.id.btnEditUser);
+        Log.d("param",bundle.getString(ARG_PARAM1));
+        user.setId(mParam1);
         pref = getActivity().getSharedPreferences("AppPref", getActivity().MODE_PRIVATE);
-        if(pref.getString("id","").equals(user.getId())) {
-            btnEdit.setVisibility(Button.VISIBLE);
 
-            btnEdit.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Fragment fragment = EditUserFragment.newInstance(user.getId());
-                    FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-                    fragmentManager.beginTransaction()
-                            .replace(R.id.container, fragment)
-                            .commit();
-                }
-            });
-        }
+        // EditText
+        etEmail = (EditText)view.findViewById(R.id.email);
+        etFirstName = (EditText)view.findViewById(R.id.first_name);
+        etLastName = (EditText)view.findViewById(R.id.last_name);
+        etCountry = (EditText)view.findViewById(R.id.country);
+        etCity = (EditText)view.findViewById(R.id.city);
+        etPostcode = (EditText)view.findViewById(R.id.postcode);
+        etAddress = (EditText)view.findViewById(R.id.address);
 
-
-        tvName = (TextView)view.findViewById(R.id.tvUsername);
-        tvCity = (TextView)view.findViewById(R.id.tvCity);
-        mProfileView = view.findViewById(R.id.userprofile_view);
-        mProgressView = view.findViewById(R.id.progressBar);
+        // Views
+        mEditProfileView = view.findViewById(R.id.edit_user_form);
+        mProgressView = view.findViewById(R.id.edit_user_progress);
 
         attemptDl(user.getId());
 
         return view;
     }
 
-    public void attemptDl(String param) {
+    private void attemptDl(String param) {
         if (mDlTask != null) {
             return;
         }
@@ -180,12 +168,12 @@ public class UserFragment extends Fragment {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
             int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
 
-            mProfileView.setVisibility(show ? View.GONE : View.VISIBLE);
-            mProfileView.animate().setDuration(shortAnimTime).alpha(
+            mEditProfileView.setVisibility(show ? View.GONE : View.VISIBLE);
+            mEditProfileView.animate().setDuration(shortAnimTime).alpha(
                     show ? 0 : 1).setListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationEnd(Animator animation) {
-                    mProfileView.setVisibility(show ? View.GONE : View.VISIBLE);
+                    mEditProfileView.setVisibility(show ? View.GONE : View.VISIBLE);
                 }
             });
 
@@ -201,7 +189,7 @@ public class UserFragment extends Fragment {
             // The ViewPropertyAnimator APIs are not available, so simply show
             // and hide the relevant UI components.
             mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
-            mProfileView.setVisibility(show ? View.GONE : View.VISIBLE);
+            mEditProfileView.setVisibility(show ? View.GONE : View.VISIBLE);
         }
     }
 
@@ -210,7 +198,7 @@ public class UserFragment extends Fragment {
         @Override
         protected JSONObject doInBackground(String... params) {
             sr = new ServerRequest(getActivity());
-            Log.d("param",params[0]);
+            Log.d("param", params[0]);
             JSONObject json = sr.getJSONFromUrl("/users/"+params[0], null);
 
             return json;
@@ -228,12 +216,22 @@ public class UserFragment extends Fragment {
                     user.setEmail(json.getString("email"));
                     user.setFirstName(json.getString("firstName"));
                     user.setLastName(json.getString("lastName"));
-                    //String city = json.getString("city");
-                    tvName.setText(user.getFirstName()+" "+user.getLastName());
+                    if(json.has("country"))
+                        user.setCountry(json.getString("country"));
                     if(json.has("city"))
-                        tvCity.setText(json.getString("city"));
-                    else
-                        tvCity.setText("unknown");
+                        user.setCity(json.getString("city"));
+                    if(json.has("postcode"))
+                        user.setCountry(json.getString("postcode"));
+                    //if(json.has("address"))
+                    //    user.setCity(json.getString("address"));
+
+                    etEmail.setText(user.getEmail());
+                    etFirstName.setText(user.getFirstName());
+                    etLastName.setText(user.getLastName());
+                    etCountry.setText(user.getCountry());
+                    etCity.setText(user.getCity());
+                    etPostcode.setText(user.getPostcode());
+                    //etAddress.setText(user.getAddress());
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -247,5 +245,4 @@ public class UserFragment extends Fragment {
             showProgress(false);
         }
     }
-
 }
