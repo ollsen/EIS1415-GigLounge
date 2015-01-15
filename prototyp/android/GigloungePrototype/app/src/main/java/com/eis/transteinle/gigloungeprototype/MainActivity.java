@@ -1,29 +1,24 @@
 package com.eis.transteinle.gigloungeprototype;
 
 import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.content.Context;
-import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.support.v4.widget.DrawerLayout;
-import android.widget.ArrayAdapter;
-import android.widget.TextView;
 
+import com.eis.transteinle.gigloungeprototype.band.BandListFragment;
+import com.eis.transteinle.gigloungeprototype.band.CreateBandFragment;
 import com.eis.transteinle.gigloungeprototype.connection.ServerRequest;
 import com.eis.transteinle.gigloungeprototype.user.UserFragment;
 
@@ -93,17 +88,19 @@ public class MainActivity extends ActionBarActivity
         pref = getSharedPreferences("AppPref", MODE_PRIVATE);
         switch (position) {
             case 0:
-                if(pref.contains("id"))
-                    //fragment = UserprofileFragment.newInstance(pref.getString("username", ""));
-                    fragment = PlaceholderFragment.newInstance(position + 1);
-                else
-                    fragment = PlaceholderFragment.newInstance(position + 1);
+                fragment = PlaceholderFragment.newInstance(position + 1);
                 break;
             case 1:
-                fragment = BandFragment.newInstance(position +1);
+                fragment = UserFragment.newInstance(pref.getString("id", ""));
                 break;
             case 2:
-                fragment = UserFragment.newInstance(pref.getString("id", ""));
+                fragment = BandListFragment.newInstance(position + 1);
+                break;
+            case 3:
+                fragment = PlaceholderFragment.newInstance(position + 1);
+                break;
+            case 4:
+                fragment = CreateBandFragment.newInstance("","");
                 break;
             default:
                 fragment = PlaceholderFragment.newInstance(position + 1);
@@ -119,12 +116,15 @@ public class MainActivity extends ActionBarActivity
     public void onSectionAttached(int number) {
         switch (number) {
             case 1:
-                mTitle = getString(R.string.title_profile);
+                mTitle = getString(R.string.title_activity_main);
                 break;
             case 2:
-                mTitle = getString(R.string.title_bands);
+                mTitle = getString(R.string.title_profile);
                 break;
             case 3:
+                mTitle = getString(R.string.title_bands);
+                break;
+            case 4:
                 mTitle = getString(R.string.title_events);
                 break;
         }
@@ -172,7 +172,7 @@ public class MainActivity extends ActionBarActivity
         protected JSONObject doInBackground(String... params) {
             sr = new ServerRequest(MainActivity.this);
 
-            JSONObject json = sr.getJSONFromUrl("/home", null);
+            JSONObject json = sr.getJSON("/home");
 
             return json;
         }

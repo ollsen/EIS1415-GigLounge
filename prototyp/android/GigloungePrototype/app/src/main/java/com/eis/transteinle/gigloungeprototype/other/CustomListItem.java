@@ -7,10 +7,16 @@ public class CustomListItem {
 
     private String itemTitle = "";
     private String secondTitle = "";
+    private String id = "";
 
-    public CustomListItem(String title,String secondTitle) {
+    public CustomListItem(String id,String title,String secondTitle) {
+        this.id = id;
         this.itemTitle = title;
         this.secondTitle = secondTitle;
+    }
+
+    public String getId() {
+        return id;
     }
 
     public String getItemTitle() {

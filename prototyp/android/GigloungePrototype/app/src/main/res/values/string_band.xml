@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="band_name">Bandname</string>
+    <string name="band_genre">Genre</string>
+    <string name="band_country">Country</string>
+</resources>

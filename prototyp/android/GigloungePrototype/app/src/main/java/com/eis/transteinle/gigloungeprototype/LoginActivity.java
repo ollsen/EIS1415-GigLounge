@@ -296,7 +296,7 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
         protected JSONObject doInBackground(List<NameValuePair>... params) {
             sr = new ServerRequest(LoginActivity.this);
 
-            JSONObject json = sr.getJSONFromUrl("/login", params[0]);
+            JSONObject json = sr.postJSON("/login", params[0]);
 
             return json;
         }

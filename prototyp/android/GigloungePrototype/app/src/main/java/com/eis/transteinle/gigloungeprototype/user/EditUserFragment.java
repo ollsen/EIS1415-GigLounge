@@ -19,6 +19,7 @@ import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.content.CursorLoader;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -194,19 +195,31 @@ public class EditUserFragment extends Fragment {
     public String getRealPathFromURI(Context context, Uri contentUri) {
         Cursor cursor = null;
         try {
-            String wholeId = DocumentsContract.getDocumentId(contentUri);
-            // Split at colon, use second item in the array
-            String id = wholeId.split(":")[1];
             String[] proj = {MediaStore.Images.Media.DATA};
+            if(Build.VERSION.SDK_INT > 19) {
+                String wholeId = DocumentsContract.getDocumentId(contentUri);
+                // Split at colon, use second item in the array
+                String id = wholeId.split(":")[1];
 
-            // where id is equal to
-            String sel = MediaStore.Images.Media._ID + "=?";
-            cursor = context.getContentResolver().query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI
-                , proj, sel, new String[]{id}, null);
+                // where id is equal to
+                String sel = MediaStore.Images.Media._ID + "=?";
+                cursor = context.getContentResolver().query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI
+                        , proj, sel, new String[]{id}, null);
 
-            int column_index = cursor.getColumnIndex(proj[0]);
-            cursor.moveToFirst();
-            return cursor.getString(column_index);
+                int column_index = cursor.getColumnIndex(proj[0]);
+                cursor.moveToFirst();
+                return cursor.getString(column_index);
+            } else {
+                // For API 11 to 18
+                CursorLoader cursorLoader = new CursorLoader(
+                        context,
+                        contentUri, proj, null, null, null);
+                cursor = cursorLoader.loadInBackground();
+                int column_index =
+                        cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+                cursor.moveToFirst();
+                return cursor.getString(column_index);
+            }
         } finally {
             if (cursor != null) {
                 cursor.close();
@@ -215,6 +228,9 @@ public class EditUserFragment extends Fragment {
     }
 
     private void attemptEditUser() {
+        if (mPutEditTask != null) {
+            return;
+        }
 
         user.setEmail(etEmail.getText().toString());
         user.setFirstName(etFirstName.getText().toString());
@@ -421,7 +437,7 @@ public class EditUserFragment extends Fragment {
 
         @Override
         protected void onCancelled() {
-            mDlTask = null;
+            mPutEditTask = null;
             showProgress(false);
         }
     }
@@ -460,7 +476,7 @@ public class EditUserFragment extends Fragment {
 
         @Override
         protected void onCancelled() {
-            mDlTask = null;
+            mUlTask = null;
             showProgress(false);
         }
     }

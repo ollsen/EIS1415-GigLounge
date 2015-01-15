@@ -6,6 +6,8 @@ import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -17,6 +19,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.eis.transteinle.gigloungeprototype.R;
@@ -24,6 +27,8 @@ import com.eis.transteinle.gigloungeprototype.connection.ServerRequest;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.io.File;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -49,6 +54,7 @@ public class UserFragment extends Fragment {
 
     ServerRequest sr;
     DlTask mDlTask;
+    DlAvatarTask mDlAvatarTask;
 
     static SharedPreferences pref;
 
@@ -208,11 +214,14 @@ public class UserFragment extends Fragment {
 
     private class DlTask extends AsyncTask<String, String,JSONObject> {
 
+        private File image;
+
         @Override
         protected JSONObject doInBackground(String... params) {
             sr = new ServerRequest(getActivity());
-            Log.d("param",params[0]);
-            JSONObject json = sr.getJSONFromUrl("/users/"+params[0], null);
+            JSONObject json = sr.getJSON("/users/"+params[0]);
+
+
 
             return json;
         }
@@ -239,7 +248,9 @@ public class UserFragment extends Fragment {
                     e.printStackTrace();
                 }
             }
-            showProgress(false);
+            mDlAvatarTask = new DlAvatarTask();
+            mDlAvatarTask.execute(user.getId());
+            //showProgress(false);
         }
 
         @Override
@@ -249,4 +260,28 @@ public class UserFragment extends Fragment {
         }
     }
 
+    private class DlAvatarTask extends AsyncTask<String, String,File> {
+        @Override
+        protected void onPostExecute(File image) {
+            super.onPostExecute(image);
+            if (image != null) {
+                ImageView myImage = (ImageView) getActivity().findViewById(R.id.avatar);
+                Bitmap myBitmap = BitmapFactory.decodeFile(image.getAbsolutePath());
+                myImage.setImageBitmap(myBitmap);
+            }
+            showProgress(false);
+        }
+
+        @Override
+        protected File doInBackground(String... params) {
+            Log.d("param",params[0]);
+            File image = sr.getMedia("/users/"+params[0]+"/avatar", null);
+            return image;
+        }
+        @Override
+        protected void onCancelled() {
+            mDlAvatarTask = null;
+            showProgress(false);
+        }
+    }
 }

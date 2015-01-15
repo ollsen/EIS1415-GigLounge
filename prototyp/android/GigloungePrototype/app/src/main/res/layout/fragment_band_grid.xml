@@ -2,7 +2,15 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.eis.transteinle.gigloungeprototype.BandFragment">
+    tools:context="com.eis.transteinle.gigloungeprototype.band.BandListFragment">
+
+    <ProgressBar
+        style="?android:attr/progressBarStyleLarge"
+        android:id="@+id/list_band_progress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:visibility="gone" />
 
     <GridView android:id="@android:id/list" android:layout_width="match_parent"
         android:layout_height="match_parent" android:numColumns="2" />

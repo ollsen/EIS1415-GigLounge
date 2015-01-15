@@ -1,17 +1,18 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.eis.transteinle.gigloungeprototype.user.EditUserFragment">
+    tools:context="com.eis.transteinle.gigloungeprototype.band.CreateBandFragment">
 
-
-    <ProgressBar android:id="@+id/edit_user_progress" style="?android:attr/progressBarStyleLarge"
+    <ProgressBar android:id="@+id/create_band_progress" style="?android:attr/progressBarStyleLarge"
         android:layout_width="wrap_content" android:layout_height="wrap_content"
         android:layout_marginBottom="8dp" android:visibility="gone" />
 
-    <ScrollView android:id="@+id/edit_user_scroll" android:layout_width="match_parent"
-        android:layout_height="match_parent">
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/create_band_scroll" >
 
-        <LinearLayout android:id="@+id/edit_user_form" android:layout_width="match_parent"
+        <LinearLayout android:id="@+id/create_band_view" android:layout_width="match_parent"
             android:layout_height="wrap_content" android:orientation="vertical"
             android:paddingLeft="10dp"
             android:paddingRight="10dp">
@@ -55,53 +56,12 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="@string/email"
-                android:id="@+id/tvEmail"
+                android:text="@string/band_name"
                 android:textStyle="bold" />
 
-            <EditText android:id="@+id/email" android:layout_width="match_parent"
-                android:layout_height="wrap_content" android:hint="@string/email"
-                android:inputType="textEmailAddress" android:maxLines="1"
+            <EditText android:id="@+id/band_name" android:layout_width="match_parent"
+                android:layout_height="wrap_content" android:hint="@string/band_name" android:maxLines="1"
                 android:singleLine="true" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="@string/firstName"
-                android:id="@+id/tvFirstName"
-                android:textStyle="bold" />
-
-            <EditText android:id="@+id/first_name" android:layout_width="match_parent"
-                android:layout_height="wrap_content" android:hint="@string/firstName"
-                android:inputType="text"
-                android:maxLines="1" android:singleLine="true" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="@string/lastName"
-                android:id="@+id/tvLastName"
-                android:textStyle="bold" />
-
-            <EditText android:id="@+id/last_name" android:layout_width="match_parent"
-                android:layout_height="wrap_content" android:hint="@string/lastName"
-                android:inputType="text"
-                android:maxLines="1" android:singleLine="true" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="@string/address"
-                android:id="@+id/tvAddress"
-                android:textStyle="bold" />
-
-            <EditText android:id="@+id/address" android:layout_width="match_parent"
-                android:layout_height="wrap_content" android:hint="@string/address"
-                android:inputType="text"
-                android:maxLines="1" android:singleLine="true" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -128,13 +88,11 @@
                 android:layout_height="wrap_content" android:hint="@string/city"
                 android:inputType="text"
                 android:maxLines="1" android:singleLine="true" />
-
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="@string/country"
-                android:id="@+id/tvCountry"
+                android:text="@string/band_country"
                 android:textStyle="bold" />
 
             <Spinner
@@ -143,24 +101,20 @@
                 android:id="@+id/spinner_country"
                 android:entries="@array/country_array"/>
 
-            <LinearLayout
-                android:orientation="vertical"
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="@string/band_genre"
+                android:textStyle="bold" />
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textAppearance="?android:attr/textAppearanceMedium"
-                    android:text="@string/instruments"
-                    android:id="@+id/tvInstruments"
-                    android:textStyle="bold" />
-
-                <ListView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/lvInstruments" />
-            </LinearLayout>
+            <Spinner
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/spinner_genre"
+                android:entries="@array/genre_array"
+                android:clickable="true"
+                android:spinnerMode="dialog" />
 
             <Button android:id="@+id/save_user_btn" style="?android:textAppearanceSmall"
                 android:layout_width="match_parent" android:layout_height="wrap_content"

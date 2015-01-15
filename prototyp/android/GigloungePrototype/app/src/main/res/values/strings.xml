@@ -2,7 +2,7 @@
 <resources>
 
     <string name="app_name">Giglounge Prototype</string>
-    <string name="title_activity_main">MainActivity</string>
+    <string name="title_activity_main">Home</string>
     <string name="title_profile">Profile</string>
     <string name="title_bands">Bands</string>
     <string name="title_events">Events</string>
@@ -37,6 +37,14 @@
         <item>Sweden</item>
         <item>UK</item>
         <item>USA</item>
+    </string-array>
+    <string-array name="genre_array">
+        <item>Rock</item>
+        <item>Pop</item>
+        <item>Hard Rock</item>
+        <item>Heavy Metal</item>
+        <item>Punk Rock</item>
+        <item>Alternative Rock</item>
     </string-array>
 
 </resources>

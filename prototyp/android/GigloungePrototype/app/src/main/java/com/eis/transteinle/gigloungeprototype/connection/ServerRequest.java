@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
+import android.os.Environment;
 import android.util.Log;
 
 import org.apache.http.HttpEntity;
@@ -26,6 +27,7 @@ import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -52,6 +54,8 @@ public class ServerRequest {
     private static final String COOKIE_DOMAIN = "cookieDomain";
 
     private static String domain = "h2192129.stratoserver.net:3000";
+
+    private final String PATH = "/data/com.eis.transteinle.gigloungeprototype/";
 
     public ServerRequest(Context ctx){
         this.ctx = ctx;
@@ -127,6 +131,16 @@ public class ServerRequest {
             e.printStackTrace();
         }
         try {
+            jObj = new JSONObject(buildString(is));
+        } catch (JSONException e) {
+            Log.e("JSON Parser", "Error parsing data " + e.toString());
+        }
+        return jObj;
+    }
+
+    private String buildString(InputStream is) {
+        String json = null;
+        try {
             BufferedReader reader = new BufferedReader(new InputStreamReader(is, "utf-8"));
             StringBuilder sb = new StringBuilder();
             String line = null;
@@ -136,14 +150,70 @@ public class ServerRequest {
             is.close();
             json = sb.toString();
             Log.e("JSON", json);
+            return json;
         } catch (Exception e){
             Log.e("Buffer Error", "Error converting result " + e.toString());
         }
+        return json;
+    }
+
+    public JSONObject getJSON (String path) {
         try {
-            jObj = new JSONObject(json);
+            HttpGet httpGet = new HttpGet("http://"+domain+path);
+            HttpResponse httpResponse = httpClient.execute(httpGet);
+            HttpEntity httpEntity = httpResponse.getEntity();
+            is = httpEntity.getContent();
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        } catch (ClientProtocolException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        try {
+            jObj = new JSONObject(buildString(is));
         } catch (JSONException e) {
             Log.e("JSON Parser", "Error parsing data " + e.toString());
         }
+
+        return jObj;
+    }
+
+    public JSONObject postJSON (String path, List<NameValuePair> params) {
+        try {
+            HttpPost httpPost = new HttpPost("http://"+domain+path);
+            httpPost.setEntity(new UrlEncodedFormEntity(params,"UTF-8"));
+            HttpResponse httpResponse = httpClient.execute(httpPost);
+            HttpEntity httpEntity = httpResponse.getEntity();
+            is = httpEntity.getContent();
+            cookies = httpClient.getCookieStore().getCookies();
+            if (cookies.isEmpty()) {
+                System.out.println("None");
+            } else {
+                for (int i = 0; i < cookies.size(); i++) {
+                    System.out.println("- " + cookies.get(i).toString());
+                    SharedPreferences.Editor edit = pref.edit();
+                    edit.putString(COOKIE_NAME,cookies.get(i).getName());
+                    edit.putString(COOKIE_VALUE,cookies.get(i).getValue());
+                    edit.putString(COOKIE_DOMAIN,cookies.get(i).getDomain());
+                    edit.commit();
+                    Log.d("pref",pref.getString(COOKIE_NAME,""));
+                }
+
+            }
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        } catch (ClientProtocolException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        try {
+            jObj = new JSONObject(buildString(is));
+        } catch (JSONException e) {
+            Log.e("JSON Parser", "Error parsing data " + e.toString());
+        }
+
         return jObj;
     }
 
@@ -163,20 +233,7 @@ public class ServerRequest {
         }
 
         try {
-            BufferedReader reader = new BufferedReader(new InputStreamReader(is, "utf-8"));
-            StringBuilder sb = new StringBuilder();
-            String line = null;
-            while ((line = reader.readLine()) != null) {
-                sb.append(line + "\n");
-            }
-            is.close();
-            json = sb.toString();
-            Log.e("JSON1", json);
-        } catch (Exception e){
-            Log.e("Buffer Error", "Error converting result " + e.toString());
-        }
-        try {
-            jObj = new JSONObject(json);
+            jObj = new JSONObject(buildString(is));
         } catch (JSONException e) {
             Log.e("JSON Parser", "Error parsing data " + e.toString());
         }
@@ -205,13 +262,63 @@ public class ServerRequest {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
+        try {
+            BufferedReader reader = new BufferedReader(new InputStreamReader(is, "utf-8"));
+            StringBuilder sb = new StringBuilder();
+            String line = null;
+            while ((line = reader.readLine()) != null) {
+                sb.append(line + "\n");
+            }
+            is.close();
+            json = sb.toString();
+            Log.e("JSON1", json);
+        } catch (Exception e){
+            Log.e("Buffer Error", "Error converting result " + e.toString());
+        }
         try {
             jObj = new JSONObject(json);
         } catch (JSONException e) {
             Log.e("JSON Parser", "Error parsing data " + e.toString());
         }
         return jObj;
+    }
+
+    public File getMedia(String path, List<NameValuePair> params) {
+        String sdCardRoot = Environment.getExternalStorageDirectory().getAbsolutePath();
+        File file = new File(ctx.getFilesDir(),"file.jpg");
+        try {
+
+            //MultipartEntity entity = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE);
+
+
+            //Long fileSize = file.length();
+            //Log.d("filesize", fileSize.toString());
+            //FileBody fb = new FileBody(file);
+            //entity.addPart("avatar",fb);
+
+            FileOutputStream fileOutput = new FileOutputStream(file);
+
+            HttpGet httpGet  = new HttpGet("http://"+domain+path);
+            //httpGet.setEntity(entity);
+            HttpResponse httpResponse = httpClient.execute(httpGet);
+            HttpEntity httpEntity = httpResponse.getEntity();
+            is = httpEntity.getContent();
+            int inByte;
+            while ((inByte = is.read()) != -1)
+                fileOutput.write(inByte);
+            is.close();
+            fileOutput.close();
+
+
+            return file;
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        } catch (ClientProtocolException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return file;
     }
 
 

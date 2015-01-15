@@ -298,7 +298,7 @@ public class SignUpActivity extends Activity implements LoaderCallbacks<Cursor> 
         protected JSONObject doInBackground(List<NameValuePair>... params) {
             sr = new ServerRequest(SignUpActivity.this);
 
-            JSONObject json = sr.getJSONFromUrl("/signup", params[0]);
+            JSONObject json = sr.postJSON("/signup", params[0]);
 
             return json;
         }
