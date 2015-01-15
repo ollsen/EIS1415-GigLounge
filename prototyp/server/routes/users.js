@@ -39,12 +39,13 @@ module.exports = function(passport) {
       });
     });
     
-    /* PUT users listing. */
+    /* PUT edited user. */
     router.put('/:_id', isAuthenticated, function(req, res) {
         getAdminquery(req).exec(function(err, perm){
             if(req.session.passport.user === req.params._id || (perm != null && perm.system)) {
                 User.findOne({_id : req.params._id}, function(err, user){
                     if(err) {console.log(err)}
+                    console.log(req.body);
                     if(req.body.email) {
                         user.email = req.body.email;
                     }
@@ -59,6 +60,12 @@ module.exports = function(passport) {
                     }
                     if(req.body.country) {
                         user.country = req.body.country;
+                    }
+                    if(req.body.city) {
+                        user.city = req.body.city;
+                    }
+                    if(req.body.postcode) {
+                        user.postcode = req.body.postcode;
                     }
                     user.save(function (err){
                         if (err){ console.log(err);}
