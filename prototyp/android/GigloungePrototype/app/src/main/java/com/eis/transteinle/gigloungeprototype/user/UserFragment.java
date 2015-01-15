@@ -110,6 +110,7 @@ public class UserFragment extends Fragment {
                     FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
                     fragmentManager.beginTransaction()
                             .replace(R.id.container, fragment)
+                            .addToBackStack(null)
                             .commit();
                 }
             });

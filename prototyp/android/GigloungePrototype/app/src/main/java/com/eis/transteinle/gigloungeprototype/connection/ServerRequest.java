@@ -13,7 +13,11 @@ import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpPut;
 import org.apache.http.cookie.Cookie;
+import org.apache.http.entity.mime.HttpMultipartMode;
+import org.apache.http.entity.mime.MultipartEntity;
+import org.apache.http.entity.mime.content.FileBody;
 import org.apache.http.impl.client.BasicCookieStore;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.cookie.BasicClientCookie;
@@ -21,6 +25,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -75,7 +80,7 @@ public class ServerRequest {
         return cookies;
     }
 
-    public JSONObject getJSONFromUrl(String url, List<NameValuePair> params){
+    public JSONObject getJSONFromUrl(String path, List<NameValuePair> params){
         try {
             //pref = ctx.getSharedPreferences("AppPref", Context.MODE_PRIVATE);
             /*if(cookies.size() == 0) {
@@ -88,11 +93,11 @@ public class ServerRequest {
             }*/
             HttpResponse httpResponse;
             if(params == null) {
-                HttpGet httpGet = new HttpGet("http://"+domain+url);
+                HttpGet httpGet = new HttpGet("http://"+domain+path);
                 httpResponse = httpClient.execute(httpGet);
             } else {
-                HttpPost httpPost = new HttpPost("http://"+domain+url);
-                httpPost.setEntity(new UrlEncodedFormEntity(params));
+                HttpPost httpPost = new HttpPost("http://"+domain+path);
+                httpPost.setEntity(new UrlEncodedFormEntity(params,"UTF-8"));
                 httpResponse = httpClient.execute(httpPost);
             }
             HttpEntity httpEntity = httpResponse.getEntity();
@@ -134,6 +139,73 @@ public class ServerRequest {
         } catch (Exception e){
             Log.e("Buffer Error", "Error converting result " + e.toString());
         }
+        try {
+            jObj = new JSONObject(json);
+        } catch (JSONException e) {
+            Log.e("JSON Parser", "Error parsing data " + e.toString());
+        }
+        return jObj;
+    }
+
+    public JSONObject putJSON (String path, List<NameValuePair> params) {
+        try {
+            HttpPut httpPut = new HttpPut("http://"+domain+path);
+            httpPut.setEntity(new UrlEncodedFormEntity(params,"UTF-8"));
+            HttpResponse httpResponse = httpClient.execute(httpPut);
+            HttpEntity httpEntity = httpResponse.getEntity();
+            is = httpEntity.getContent();
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        } catch (ClientProtocolException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            BufferedReader reader = new BufferedReader(new InputStreamReader(is, "utf-8"));
+            StringBuilder sb = new StringBuilder();
+            String line = null;
+            while ((line = reader.readLine()) != null) {
+                sb.append(line + "\n");
+            }
+            is.close();
+            json = sb.toString();
+            Log.e("JSON1", json);
+        } catch (Exception e){
+            Log.e("Buffer Error", "Error converting result " + e.toString());
+        }
+        try {
+            jObj = new JSONObject(json);
+        } catch (JSONException e) {
+            Log.e("JSON Parser", "Error parsing data " + e.toString());
+        }
+
+        return jObj;
+    }
+
+    public JSONObject postMedia(String path, List<NameValuePair> params) {
+        try {
+            MultipartEntity entity = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE);
+            File file = new File(params.get(0).getValue());
+            Long fileSize = file.length();
+            Log.d("filesize", fileSize.toString());
+            FileBody fb = new FileBody(file);
+            entity.addPart("avatar",fb);
+
+            HttpPost httpPost = new HttpPost("http://"+domain+path);
+            httpPost.setEntity(entity);
+            HttpResponse httpResponse = httpClient.execute(httpPost);
+            HttpEntity httpEntity = httpResponse.getEntity();
+            is = httpEntity.getContent();
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        } catch (ClientProtocolException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         try {
             jObj = new JSONObject(json);
         } catch (JSONException e) {

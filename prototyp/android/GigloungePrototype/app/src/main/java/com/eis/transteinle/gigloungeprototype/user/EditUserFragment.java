@@ -4,24 +4,42 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.content.ActivityNotFoundException;
+import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.DocumentsContract;
+import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.eis.transteinle.gigloungeprototype.R;
 import com.eis.transteinle.gigloungeprototype.connection.ServerRequest;
 
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -45,16 +63,23 @@ public class EditUserFragment extends Fragment {
 
     ServerRequest sr;
     DlTask mDlTask;
+    PutEditTask mPutEditTask;
+    UlTask mUlTask;
 
     private EditText etEmail, etFirstName, etLastName, etCountry, etCity, etPostcode
             ,etAddress;
+    private Button btnSave, btnChooseAvatar, btnUploadAvatar;
 
     private View mProgressView;
     private View mEditProfileView;
 
     static SharedPreferences pref;
+    List<NameValuePair> params;
+    private String mFilePath;
 
     private OnFragmentInteractionListener mListener;
+    private static final int PICKFILE_RESULT_CODE = 1;
+
 
     /**
      * Use this factory method to create a new instance of
@@ -100,18 +125,118 @@ public class EditUserFragment extends Fragment {
         etEmail = (EditText)view.findViewById(R.id.email);
         etFirstName = (EditText)view.findViewById(R.id.first_name);
         etLastName = (EditText)view.findViewById(R.id.last_name);
-        etCountry = (EditText)view.findViewById(R.id.country);
+        //etCountry = (EditText)view.findViewById(R.id.country);
         etCity = (EditText)view.findViewById(R.id.city);
         etPostcode = (EditText)view.findViewById(R.id.postcode);
         etAddress = (EditText)view.findViewById(R.id.address);
+
+        // Buttons
+        btnSave = (Button)view.findViewById(R.id.save_user_btn);
+        btnChooseAvatar = (Button)view.findViewById(R.id.choose_avatar_btn);
+        btnUploadAvatar = (Button)view.findViewById(R.id.upload_avatar_btn);
 
         // Views
         mEditProfileView = view.findViewById(R.id.edit_user_form);
         mProgressView = view.findViewById(R.id.edit_user_progress);
 
+        btnChooseAvatar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+                intent.setType("image/*");
+                intent.putExtra("crop", "true");
+                intent.putExtra("aspectX", 1);
+                intent.putExtra("aspectY", 1);
+                intent.putExtra("outputX", 96);
+                intent.putExtra("outputY", 96);
+                intent.putExtra("noFaceDetection", true);
+                intent.putExtra("return-data", true);
+                startActivityForResult(intent,PICKFILE_RESULT_CODE);
+            }
+        });
+
+        btnUploadAvatar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                attemptUl();
+            }
+        });
+
+        btnSave.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                attemptEditUser();
+            }
+        });
+
         attemptDl(user.getId());
 
         return view;
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch(requestCode) {
+            case PICKFILE_RESULT_CODE:
+                if (resultCode == getActivity().RESULT_OK) {
+                    Uri galleryUri = data.getData();
+                    ImageView myImage = (ImageView) getActivity().findViewById(R.id.avatar);
+                    myImage.setImageURI(galleryUri);
+                    //mFilePath = galleryUri.getPath();
+                    mFilePath = getRealPathFromURI(getActivity(), galleryUri);
+                    btnUploadAvatar.setEnabled(true);
+                    Log.d("FILEPATH", mFilePath);
+                }
+                break;
+        }
+    }
+
+    public String getRealPathFromURI(Context context, Uri contentUri) {
+        Cursor cursor = null;
+        try {
+            String wholeId = DocumentsContract.getDocumentId(contentUri);
+            // Split at colon, use second item in the array
+            String id = wholeId.split(":")[1];
+            String[] proj = {MediaStore.Images.Media.DATA};
+
+            // where id is equal to
+            String sel = MediaStore.Images.Media._ID + "=?";
+            cursor = context.getContentResolver().query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI
+                , proj, sel, new String[]{id}, null);
+
+            int column_index = cursor.getColumnIndex(proj[0]);
+            cursor.moveToFirst();
+            return cursor.getString(column_index);
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+        }
+    }
+
+    private void attemptEditUser() {
+
+        user.setEmail(etEmail.getText().toString());
+        user.setFirstName(etFirstName.getText().toString());
+        user.setLastName(etLastName.getText().toString());
+        user.setCountry(etCountry.getText().toString());
+        user.setCity(etCity.getText().toString());
+        user.setPostcode(etPostcode.getText().toString());
+        //user.setAddress(etAddress.getText().toString());
+
+        Log.d("User",user.getCity());
+
+        params = new ArrayList<NameValuePair>();
+        params.add(new BasicNameValuePair("email", user.getEmail()));
+        params.add(new BasicNameValuePair("firstName", user.getFirstName()));
+        params.add(new BasicNameValuePair("lastName", user.getLastName()));
+        params.add(new BasicNameValuePair("country", user.getCountry()));
+        params.add(new BasicNameValuePair("city", user.getCity()));
+        params.add(new BasicNameValuePair("postcode", user.getPostcode()));
+        //params.add(new BasicNameValuePair("address", user.getAddress()));
+        showProgress(true);
+        mPutEditTask = new PutEditTask();
+        mPutEditTask.execute(params);
     }
 
     private void attemptDl(String param) {
@@ -122,6 +247,20 @@ public class EditUserFragment extends Fragment {
         showProgress(true);
         mDlTask = new DlTask();
         mDlTask.execute(param);
+    }
+
+    private void attemptUl() {
+        if (mUlTask != null) {
+            return;
+        }
+
+
+        if(mFilePath != null)
+            params = new ArrayList<NameValuePair>();
+            params.add(new BasicNameValuePair("image", mFilePath));
+            showProgress(true);
+            mUlTask = new UlTask();
+            mUlTask.execute(params);
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -228,10 +367,90 @@ public class EditUserFragment extends Fragment {
                     etEmail.setText(user.getEmail());
                     etFirstName.setText(user.getFirstName());
                     etLastName.setText(user.getLastName());
-                    etCountry.setText(user.getCountry());
+                    //etCountry.setText(user.getCountry());
                     etCity.setText(user.getCity());
                     etPostcode.setText(user.getPostcode());
                     //etAddress.setText(user.getAddress());
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+            showProgress(false);
+        }
+
+        @Override
+        protected void onCancelled() {
+            mDlTask = null;
+            showProgress(false);
+        }
+    }
+
+    private class PutEditTask extends  AsyncTask<List<NameValuePair>, String, JSONObject> {
+        @Override
+        protected JSONObject doInBackground(List<NameValuePair>... params) {
+            JSONObject json = sr.putJSON("/users/"+user.getId(), params[0]);
+
+            return json;
+        }
+
+        @Override
+        protected void onPostExecute(JSONObject json) {
+            super.onPostExecute(json);
+
+            if (json != null) {
+                try {
+
+                    String jsonstr = json.toString();
+                    Log.v("Login", "response: " + jsonstr);
+                    if(json.get("message").equals("updated")) {
+                        Fragment fragment = UserFragment.newInstance(user.getId());
+                        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                        fragmentManager.beginTransaction()
+                                .replace(R.id.container, fragment)
+                                .commit();
+                    } else {
+                        Toast toast = Toast.makeText(getActivity().getApplicationContext(), "error updating user profile", Toast.LENGTH_SHORT);
+                        toast.show();
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+            showProgress(false);
+        }
+
+        @Override
+        protected void onCancelled() {
+            mDlTask = null;
+            showProgress(false);
+        }
+    }
+
+    private class UlTask extends AsyncTask<List<NameValuePair>, String,JSONObject> {
+
+        @Override
+        protected JSONObject doInBackground(List<NameValuePair>... params) {
+            JSONObject json = sr.postMedia("/users/"+user.getId()+"/avatar", params[0]);
+
+            return json;
+        }
+
+        @Override
+        protected void onPostExecute(JSONObject json) {
+            super.onPostExecute(json);
+
+            if (json != null) {
+                try {
+
+                    String jsonstr = json.toString();
+                    Log.v("Login", "response: " + jsonstr);
+                    if(json.get("message").equals("avatar added")) {
+                        Toast toast = Toast.makeText(getActivity().getApplicationContext(), "avatar uploaded", Toast.LENGTH_SHORT);
+                        toast.show();
+                    } else {
+                        Toast toast = Toast.makeText(getActivity().getApplicationContext(), "error uploading an avatar", Toast.LENGTH_SHORT);
+                        toast.show();
+                    }
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }

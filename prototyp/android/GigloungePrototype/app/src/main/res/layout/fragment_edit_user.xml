@@ -16,6 +16,41 @@
             android:paddingLeft="10dp"
             android:paddingRight="10dp">
 
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/avatar"
+                    android:minWidth="150dp"
+                    android:minHeight="150dp"/>
+
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginTop="20dp">
+
+                    <Button
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Choose Avatar"
+                        android:id="@+id/choose_avatar_btn" />
+
+                    <Button
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Upload Avatar"
+                        android:id="@+id/upload_avatar_btn"
+                        android:enabled="false" />
+                </LinearLayout>
+
+            </LinearLayout>
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -102,10 +137,11 @@
                 android:id="@+id/tvCountry"
                 android:textStyle="bold" />
 
-            <EditText android:id="@+id/country" android:layout_width="match_parent"
-                android:layout_height="wrap_content" android:hint="@string/country"
-                android:inputType="text"
-                android:maxLines="1" android:singleLine="true" />
+            <Spinner
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/spinner_country"
+                android:entries="@array/country_array"/>
 
             <LinearLayout
                 android:orientation="vertical"
@@ -126,9 +162,9 @@
                     android:id="@+id/lvInstruments" />
             </LinearLayout>
 
-            <Button android:id="@+id/save_btn" style="?android:textAppearanceSmall"
+            <Button android:id="@+id/save_user_btn" style="?android:textAppearanceSmall"
                 android:layout_width="match_parent" android:layout_height="wrap_content"
-                android:layout_marginTop="16dp" android:text="@string/action_sign_up"
+                android:layout_marginTop="16dp" android:text="@string/save_user"
                 android:textStyle="bold" />
 
         </LinearLayout>
