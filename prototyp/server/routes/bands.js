@@ -12,7 +12,7 @@ module.exports = function(passport) {
     
     /* GET Bandlist */
     router.get('/', isAuthenticated, function(req, res) {
-        Band.find({},'name', function(err, bands){
+        Band.find({},'name city', function(err, bands){
             if(err) {console.log('error: '+err);}
             if (!bands.length) {
                 res.json({ message : 'No Bands'});
@@ -39,8 +39,14 @@ module.exports = function(passport) {
         newBand.country = req.body.country;
         newBand.city = req.body.city;
         newBand.postcode = req.body.postcode;
+        newBand.genre.push(req.body.genre);
+        console.log(req.body.members)
+        var str = JSON.stringify(eval("("+req.body.members+")"));
+        console.log(str);
+        var member = JSON.parse(str);
+        console.log(member);
         newBand.members.push({  user: req.user,
-                                role: req.body.members.role,
+                                role: member.role,
                                 permission: 3
                              });
         newBand.save(function (err) {
