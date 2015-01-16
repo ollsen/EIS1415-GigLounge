@@ -51,7 +51,7 @@ module.exports = function(passport) {
     * GET Home
     */
     router.get('/home', isAuthenticated, function(req, res) {
-        res.json({message : 'welcome'});
+        res.json({message : 'welcome', id: req.session.passport.user});
     });
     
    return router;

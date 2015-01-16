@@ -16,10 +16,13 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.support.v4.widget.DrawerLayout;
+import android.widget.Button;
 
 import com.eis.transteinle.gigloungeprototype.band.BandListFragment;
 import com.eis.transteinle.gigloungeprototype.band.CreateBandFragment;
 import com.eis.transteinle.gigloungeprototype.connection.ServerRequest;
+import com.eis.transteinle.gigloungeprototype.event.CreateEventFragment;
+import com.eis.transteinle.gigloungeprototype.event.EventListFragment;
 import com.eis.transteinle.gigloungeprototype.user.UserFragment;
 
 import org.json.JSONException;
@@ -186,10 +189,10 @@ public class MainActivity extends ActionBarActivity
                 try {
                     Log.d("JSON", json.toString());
                     SharedPreferences.Editor edit = pref.edit();
-                    edit.putString("id", json.getJSONObject("user").getString("_id"));
-                    edit.putString("email", json.getJSONObject("user").getString("email"));
-                    edit.putString("firstName", json.getJSONObject("user").getString("firstName"));
-                    edit.putString("lastName", json.getJSONObject("user").getString("lastName"));
+                    edit.putString("id", json.getString("id"));
+                    //edit.putString("email", json.getJSONObject("user").getString("email"));
+                    //edit.putString("firstName", json.getJSONObject("user").getString("firstName"));
+                    //edit.putString("lastName", json.getJSONObject("user").getString("lastName"));
                     edit.commit();
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -235,6 +238,20 @@ public class MainActivity extends ActionBarActivity
                                  Bundle savedInstanceState) {
 
             View rootView = inflater.inflate(R.layout.fragment_main, container, false);
+
+            Button mCreateGigBtn = (Button)rootView.findViewById(R.id.create_gig_btn);
+
+            mCreateGigBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Fragment fragment = EventListFragment.newInstance("", "");
+                    FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                    fragmentManager.beginTransaction()
+                            .replace(R.id.container, fragment)
+                            .commit();
+                }
+            });
+
             return rootView;
         }
 

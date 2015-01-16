@@ -4,7 +4,71 @@
     tools:context="com.eis.transteinle.gigloungeprototype.event.CreateEventFragment">
 
     <!-- TODO: Update blank fragment layout -->
-    <TextView android:layout_width="match_parent" android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
 
+    <ProgressBar
+        style="?android:attr/progressBarStyleLarge"
+        android:id="@+id/progressBar3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:visibility="gone" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/create_event_progress" >
+
+        <LinearLayout
+            android:id="@+id/create_event_view"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <EditText android:id="@+id/event_name" android:layout_width="match_parent"
+                android:layout_height="wrap_content" android:hint="Event Name" android:maxLines="1"
+                android:singleLine="true" />
+            <EditText android:id="@+id/event_location" android:layout_width="match_parent"
+                android:layout_height="wrap_content" android:hint="Location" android:maxLines="1"
+                android:singleLine="true" />
+            <EditText android:id="@+id/event_address" android:layout_width="match_parent"
+                android:layout_height="wrap_content" android:hint="Address" android:maxLines="1"
+                android:singleLine="true" />
+            <EditText android:id="@+id/event_postcode" android:layout_width="match_parent"
+                android:layout_height="wrap_content" android:hint="Postcode" android:maxLines="1"
+                android:singleLine="true" />
+            <EditText android:id="@+id/event_city" android:layout_width="match_parent"
+                android:layout_height="wrap_content" android:hint="City" android:maxLines="1"
+                android:singleLine="true" />
+            <Spinner
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/spinner_country"
+                android:entries="@array/country_array"/>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent">
+
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Set Start"
+                    android:id="@+id/start_btn" />
+
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Set End"
+                    android:id="@+id/end_btn" />
+            </LinearLayout>
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Create Event"
+                android:id="@+id/save_event_btn" />
+
+        </LinearLayout>
+    </ScrollView>
 </FrameLayout>

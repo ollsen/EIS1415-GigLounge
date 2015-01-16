@@ -38,6 +38,31 @@
         <item>UK</item>
         <item>USA</item>
     </string-array>
+    <string-array name="country_array_code">
+        <item>AR</item>
+        <item>Australia</item>
+        <item>Belgium</item>
+        <item>BR</item>
+        <item>CA</item>
+        <item>Chile</item>
+        <item>China</item>
+        <item>Costa Rica</item>
+        <item>Czech Republic</item>
+        <item>Denmark</item>
+        <item>Finland</item>
+        <item>DE</item>
+        <item>Italy</item>
+        <item>Ireland</item>
+        <item>Jamaica</item>
+        <item>Japan</item>
+        <item>NL</item>
+        <item>Portugal</item>
+        <item>South Africa</item>
+        <item>South Korea</item>
+        <item>Sweden</item>
+        <item>GB</item>
+        <item>USA</item>
+    </string-array>
     <string-array name="genre_array">
         <item>Rock</item>
         <item>Pop</item>
