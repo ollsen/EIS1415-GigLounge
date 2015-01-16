@@ -150,11 +150,10 @@ public class EventListFragment extends Fragment {
 
     public void OnEventSelected(String param) {
         // Capture the Userprofile Fragment from the activity layout
-        BandFragment fragment = BandFragment.newInstance(param);
+        Fragment fragment = CreateGigFragment.newInstance(param,"");
         FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
         fragmentManager.beginTransaction()
                 .replace(R.id.container, fragment)
-                .addToBackStack(null)
                 .commit();
     }
 

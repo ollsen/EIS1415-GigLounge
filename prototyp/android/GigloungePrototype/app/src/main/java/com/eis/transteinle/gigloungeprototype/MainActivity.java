@@ -189,10 +189,10 @@ public class MainActivity extends ActionBarActivity
                 try {
                     Log.d("JSON", json.toString());
                     SharedPreferences.Editor edit = pref.edit();
-                    edit.putString("id", json.getString("id"));
-                    //edit.putString("email", json.getJSONObject("user").getString("email"));
-                    //edit.putString("firstName", json.getJSONObject("user").getString("firstName"));
-                    //edit.putString("lastName", json.getJSONObject("user").getString("lastName"));
+                    edit.putString("id", json.getJSONObject("user").getString("_id"));
+                    edit.putString("email", json.getJSONObject("user").getString("email"));
+                    edit.putString("firstName", json.getJSONObject("user").getString("firstName"));
+                    edit.putString("lastName", json.getJSONObject("user").getString("lastName"));
                     edit.commit();
                 } catch (JSONException e) {
                     e.printStackTrace();

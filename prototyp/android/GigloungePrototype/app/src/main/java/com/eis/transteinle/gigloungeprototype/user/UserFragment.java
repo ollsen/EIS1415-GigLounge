@@ -244,13 +244,15 @@ public class UserFragment extends Fragment {
                         tvCity.setText(json.getString("city"));
                     else
                         tvCity.setText("unknown");
+                    if(json.has("avatar")) {
+                        mDlAvatarTask = new DlAvatarTask();
+                        mDlAvatarTask.execute(user.getId());
+                    } else
+                        showProgress(false);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
             }
-            mDlAvatarTask = new DlAvatarTask();
-            mDlAvatarTask.execute(user.getId());
-            //showProgress(false);
         }
 
         @Override
